@@ -33,7 +33,7 @@ void Application::Render(void)
 {
 	// ...
 	int x = 700;
-	int y = 500;
+	int y = 700;
 	framebuffer.Fill(Color::BLACK);
 
 	
