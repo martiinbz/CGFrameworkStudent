@@ -393,3 +393,36 @@ void FloatImage::Resize(unsigned int width, unsigned int height)
 	this->height = height;
 	pixels = new_pixels;
 }
+
+void Image::DrawLineDDA(int x0, int y0, int x1, int y1, const Color& c)
+{
+	// Calculate differences between the coordinates
+	int dx = x1 - x0;
+	int dy = y1 - y0;
+
+	// Determine the number of steps needed
+	int steps = std::max(abs(dx), abs(dy));
+
+	// Calculate increments for x and y
+	float x_increment = static_cast<float>(dx) / steps;
+	float y_increment = static_cast<float>(dy) / steps;
+
+	// Draw the line using DDA algorithm
+	float x = static_cast<float>(x0);
+	float y = static_cast<float>(y0);
+	for (int i = 0; i <= steps; ++i)
+	{
+		// Round to the nearest pixel coordinates
+		int rounded_x = static_cast<int>(x + 0.5f);
+		int rounded_y = static_cast<int>(y + 0.5f);
+
+		// Set the pixel color
+		SetPixel(rounded_x, rounded_y, c);
+
+		// Move to the next pixel
+		x += x_increment;
+		y += y_increment;
+	}
+}
+
+
