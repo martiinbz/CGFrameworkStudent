@@ -396,33 +396,200 @@ void FloatImage::Resize(unsigned int width, unsigned int height)
 
 void Image::DrawLineDDA(int x0, int y0, int x1, int y1, const Color& c)
 {
-	// Calculate differences between the coordinates
+	// Diferencias entre coordenadas
 	int dx = x1 - x0;
 	int dy = y1 - y0;
 
-	// Determine the number of steps needed
+	// Determinamos el numero de pasos necesarios
 	int steps = std::max(abs(dx), abs(dy));
 
-	// Calculate increments for x and y
+	// Calculamos los incrementos de x e y
 	float x_increment = static_cast<float>(dx) / steps;
 	float y_increment = static_cast<float>(dy) / steps;
 
-	// Draw the line using DDA algorithm
+	//Algoritmo DDA
 	float x = static_cast<float>(x0);
 	float y = static_cast<float>(y0);
 	for (int i = 0; i <= steps; ++i)
 	{
-		// Round to the nearest pixel coordinates
+		//Redondeamos
 		int rounded_x = static_cast<int>(x + 0.5f);
 		int rounded_y = static_cast<int>(y + 0.5f);
 
-		// Set the pixel color
+		// Color
 		SetPixel(rounded_x, rounded_y, c);
 
-		// Move to the next pixel
+		// Pasamos al siguiente pixel
 		x += x_increment;
 		y += y_increment;
 	}
+
+
 }
+void Image::DrawRect(int x, int y, int w, int h, const Color& borderColor, int borderWidth, bool isFilled, const Color& fillColor)
+{
+	if (isFilled)
+	{
+		// Draw filled rectangle
+		for (int i = x; i < x + w; ++i)
+		{
+			for (int j = y; j < y + h; ++j)
+			{
+				SetPixel(i, j, fillColor);
+			}
+		}
+	}
+
+	// Draw border
+	for (int i = x; i < x + w; ++i)
+	{
+		for (int j = y; j < y + h; ++j)
+		{
+			// Check if the pixel is on the border
+			if (i < x + borderWidth || i >= x + w - borderWidth ||
+				j < y + borderWidth || j >= y + h - borderWidth)
+			{
+				SetPixel(i, j, borderColor);
+			}
+		}
+	}
+}
+
+void Image::DrawCircle(int x, int y, int r, const Color& borderColor, int borderWidth, bool isFilled, const Color& fillColor)
+{
+    int cx = r;
+    int cy = 0;
+    int radiusError = 1 - cx;
+
+    while (cx >= cy)
+    {
+        // Draw the eight octants
+        SetPixel(x + cx, y + cy, borderColor);
+        SetPixel(x - cx, y + cy, borderColor);
+        SetPixel(x + cx, y - cy, borderColor);
+        SetPixel(x - cx, y - cy, borderColor);
+        SetPixel(x + cy, y + cx, borderColor);
+        SetPixel(x - cy, y + cx, borderColor);
+        SetPixel(x + cy, y - cx, borderColor);
+        SetPixel(x - cy, y - cx, borderColor);
+
+        // Update the current y value
+        cy++;
+
+        // Check for decision parameter and update accordingly
+        if (radiusError < 0)
+            radiusError += 2 * cy + 1;
+        else
+        {
+            cx--;
+            radiusError += 2 * (cy - cx + 1);
+        }
+    }
+
+    // If the circle is filled, fill it using scanlines
+    if (isFilled)
+	{
+    	for (int i = x - r ; i <= x + r ; ++i)
+    	{
+        	for (int j = y - r ; j <= y + r ; ++j)
+        	{
+            // Verifica si la distancia al centro es menor o igual al radio
+            	if (((i - x) * (i - x) + (j - y) * (j - y)) <= (r * r))
+                	SetPixel(i, j, fillColor);
+        	}
+    	}
+	}
+
+
+}
+void Image::ScanLineDDA(int x0, int y0, int x1, int y1, int& minX, int& maxX)
+{
+	// Check if the line is horizontal
+	if (y0 == y1)
+		return;
+
+	// Swap points if needed to make sure y0 <= y1
+	if (y0 > y1)
+	{
+		std::swap(x0, x1);
+		std::swap(y0, y1);
+	}
+
+	// Calculate slope and ensure it's not infinity
+	float slope = (x1 - x0) / static_cast<float>(y1 - y0);
+
+	// Update minX and maxX for the first point
+	minX = static_cast<int>(x0 + 0.5f);
+	maxX = static_cast<int>(x0 + 0.5f);
+
+	// Iterate through the line and update minX and maxX
+	for (int y = y0 + 1; y <= y1; ++y)
+	{
+		float x = x0 + slope * (y - y0) + 0.5f;
+		int currentX = static_cast<int>(x);
+
+		if (currentX < minX)
+			minX = currentX;
+		if (currentX > maxX)
+			maxX = currentX;
+	}
+}
+
+void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& borderColor, bool isFilled, const Color& fillColor)
+{
+	int minX, maxX;
+
+	// Draw the border of the triangle
+	DrawLineDDA(p0.x, p0.y, p1.x, p1.y, borderColor);
+	DrawLineDDA(p1.x, p1.y, p2.x, p2.y, borderColor);
+	DrawLineDDA(p2.x, p2.y, p0.x, p0.y, borderColor);
+
+	// Fill the triangle
+	if (isFilled)
+	{
+		for (int y = static_cast<int>(p0.y) + 1; y < static_cast<int>(p1.y); ++y)
+		{
+			// Initialize minX and maxX for each scanline
+			ScanLineDDA(p0.x, p0.y, p1.x, p1.y, minX, maxX);
+
+			// Draw the horizontal line
+			for (int x = minX; x < maxX; ++x)
+			{
+				SetPixel(x, y, fillColor);
+			}
+		}
+
+		for (int y = static_cast<int>(p1.y) + 1; y < static_cast<int>(p2.y); ++y)
+		{
+			// Initialize minX and maxX for each scanline
+			ScanLineDDA(p1.x, p1.y, p2.x, p2.y, minX, maxX);
+
+			// Draw the horizontal line
+			for (int x = minX; x < maxX; ++x)
+			{
+				SetPixel(x, y, fillColor);
+			}
+		}
+
+		for (int y = static_cast<int>(p2.y) + 1; y < static_cast<int>(p0.y); ++y)
+		{
+			// Initialize minX and maxX for each scanline
+			ScanLineDDA(p2.x, p2.y, p0.x, p0.y, minX, maxX);
+
+			// Draw the horizontal line
+			for (int x = minX; x < maxX; ++x)
+			{
+				SetPixel(x, y, fillColor);
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
 
 

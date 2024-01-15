@@ -33,12 +33,19 @@ void Application::Render(void)
 {
 	// ...
 	int x = 500;
-	int y = 500;
+	int y = 400;
+	int w = 300;
+	int h = 100;
+	int r = 100;
+	Vector2 p0(100.0f,200.0f);
+	Vector2 p1(100.0f, 500.0f);
+	Vector2 p2(500.0f, 200.0f);
+
 	framebuffer.Fill(Color::BLACK);
-
-	
-	framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(255,255,0));
-
+	//framebuffer.DrawRect(x, y, w, h, Color(255,0, 0),5,TRUE,Color(255,255,255));
+	//framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(255,255,0));
+	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(255, 255, 255));
+	framebuffer.DrawTriangle( p0, p1, p2, Color(255, 0, 0), TRUE, Color(255, 255, 0));
 	framebuffer.Render();
 }
 
