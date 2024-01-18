@@ -584,6 +584,42 @@ void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2
 		}
 	}
 }
+void Image::DrawImage(const Image& image, int x, int y, bool top)
+{
+	// Ver si la imagen es válida
+	if (image.pixels == NULL || image.width == 0 || image.height == 0)
+	{
+		std::cerr << "imagen invalida" << std::endl;
+		return;
+	}
+
+	// Determine the starting row based on the top parameter
+	int startY = top ? y : y - image.height + 1;
+
+	// Iterate through the image pixels and draw to the framebuffer
+	for (int i = 0; i < image.width; ++i)
+	{
+		for (int j = 0; j < image.height; ++j)
+		{
+			// Calculate the position in the framebuffer
+			int posX = x + i;
+			int posY = startY + j;
+
+			// Check if the position is within the framebuffer bounds
+			if (posX >= 0 && posX < width && posY >= 0 && posY < height)
+			{
+				// Draw the pixel from the image to the framebuffer
+				SetPixel(posX, posY, image.GetPixel(i, j));
+			}
+		}
+	}
+}
+
+
+
+
+
+
 
 
 
