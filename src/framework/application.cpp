@@ -41,14 +41,14 @@ void Application::Render(void)
 	Vector2 p1(100.0f, 500.0f);
 	Vector2 p2(500.0f, 200.0f);
 	Image toolbar;
-	toolbar.LoadPNG("res\images\toolbar.png",true);
+	toolbar.LoadPNG("images/toolbar.png", true);
 	framebuffer.Fill(Color::BLACK);
 	//framebuffer.DrawRect(x, y, w, h, Color(255,0, 0),5,TRUE,Color(255,255,255));
 	//framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(255,255,0));
 	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(255, 255, 255));
 	//framebuffer.DrawTriangle( p0, p1, p2, Color(255, 0, 0), TRUE, Color(255, 255, 0));
-	framebuffer.DrawImage(toolbar, 0, 0, 10);
-	std::cout << "Image dimensions: " << toolbar.width << "x" << toolbar.height << std::endl;
+	framebuffer.DrawImage(toolbar, 0, 0, 5);
+	
 	framebuffer.Render();
 	
 }
