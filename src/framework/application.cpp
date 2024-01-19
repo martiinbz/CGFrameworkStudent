@@ -2,6 +2,8 @@
 #include "mesh.h"
 #include "shader.h"
 #include "utils.h" 
+#include "button.h";
+
 
 Application::Application(const char* caption, int width, int height)
 {
@@ -40,14 +42,83 @@ void Application::Render(void)
 	Vector2 p0(100.0f,200.0f);
 	Vector2 p1(100.0f, 500.0f);
 	Vector2 p2(500.0f, 200.0f);
+	framebuffer.DrawRect(x, y, w, h, Color(255,0, 0),5,TRUE,Color(255,255,255));
+	framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(255,255,0));
+	framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(255, 255, 255));
+	framebuffer.DrawTriangle( p0, p1, p2, Color(255, 0, 0), TRUE, Color(255, 255, 0));
 	Image toolbar;
 	toolbar.LoadPNG("images/toolbar.png", true);
-	framebuffer.Fill(Color::BLACK);
-	//framebuffer.DrawRect(x, y, w, h, Color(255,0, 0),5,TRUE,Color(255,255,255));
-	//framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(255,255,0));
-	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(255, 255, 255));
-	//framebuffer.DrawTriangle( p0, p1, p2, Color(255, 0, 0), TRUE, Color(255, 255, 0));
-	framebuffer.DrawImage(toolbar, 0, 0, 5);
+
+
+	//CARGAMOS TODAS LAS IMAGENES
+	Image load, save, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle;
+
+	load.LoadPNG("images/load.png", false);
+	save.LoadPNG("images/save.png", false);
+	black.LoadPNG("images/black.png", false);
+	red.LoadPNG("images/red.png", false);
+	green.LoadPNG("images/green.png", false);
+	blue.LoadPNG("images/blue.png", false);
+	//yellow.LoadPNG("images/yellow.png", false);
+	pink.LoadPNG("images/pink.png", false);
+	cyan.LoadPNG("images/cyan.png", false);
+	//white.LoadPNG("images/white.png", false);
+	eraser.LoadPNG("images/eraser.png", false);
+	line.LoadPNG("images/line.png", false);
+	rectangle.LoadPNG("images/rectangle.png", false);
+	circle.LoadPNG("images/circle.png", false);
+
+	//CREAMOS BOTONES PARA TODAS LAS IMAGENES
+
+
+	
+	Button loadbutton(load, Vector2(0, 10));
+	Button savebutton(save, Vector2(40, 10));
+	Button blackbutton(black, Vector2(80, 10));
+	Button redbutton(red, Vector2(120, 10));
+	Button greenbutton(green, Vector2(160, 10));
+	Button bluebutton(blue, Vector2(200, 10));
+	//Button yellowbutton(yellow, Vector2(240, 10));
+	Button pinkbutton(pink, Vector2(280, 10));
+	Button cyanbutton(cyan, Vector2(320, 10));
+	//Button whitebutton(white, Vector2(360, 10));
+	Button eraserbutton(eraser, Vector2(400, 10));
+	Button linebutton(line, Vector2(440, 10));
+	Button rectanglebutton(rectangle, Vector2(480, 10));
+	Button circlebutton(circle, Vector2(520, 10));
+
+
+
+	
+	framebuffer.Fill(Color::WHITE);
+	framebuffer.DrawImage(loadbutton.GetImage(),loadbutton.GetX(),loadbutton.GetY(), 5);
+	framebuffer.DrawImage(savebutton.GetImage(), savebutton.GetX(), savebutton.GetY(), 5);
+	framebuffer.DrawImage(blackbutton.GetImage(), blackbutton.GetX(), blackbutton.GetY(), 5);
+	framebuffer.DrawImage(redbutton.GetImage(), redbutton.GetX(), redbutton.GetY(), 5);
+	framebuffer.DrawImage(greenbutton.GetImage(), greenbutton.GetX(), greenbutton.GetY(), 5);
+	framebuffer.DrawImage(bluebutton.GetImage(), bluebutton.GetX(), bluebutton.GetY(), 5);
+	//framebuffer.DrawImage(yellowbutton.GetImage(), yellowbutton.GetX(), yellowbutton.GetY(), 5);
+	framebuffer.DrawImage(pinkbutton.GetImage(), pinkbutton.GetX(), pinkbutton.GetY(), 5);
+	framebuffer.DrawImage(cyanbutton.GetImage(), cyanbutton.GetX(), cyanbutton.GetY(), 5);
+	//framebuffer.DrawImage(whitebutton.GetImage(), whitebutton.GetX(), whitebutton.GetY(), 5);
+	framebuffer.DrawImage(eraserbutton.GetImage(), eraserbutton.GetX(), eraserbutton.GetY(), 5);
+	framebuffer.DrawImage(linebutton.GetImage(), linebutton.GetX(), linebutton.GetY(), 5);
+	framebuffer.DrawImage(rectanglebutton.GetImage(), rectanglebutton.GetX(), rectanglebutton.GetY(), 5);
+	framebuffer.DrawImage(circlebutton.GetImage(), circlebutton.GetX(), circlebutton.GetY(), 5);
+
+
+
+
+	
+
+
+	
+	
+
+	
+
+	
+	//framebuffer.DrawImage(load, 0, 0, 5);
 	
 	framebuffer.Render();
 	
