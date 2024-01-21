@@ -10,6 +10,12 @@
 
 class Application
 {
+
+private:
+	bool first_click;
+	int start_x, start_y;
+	int end_x, end_y;
+	
 public:
 
 	// Window

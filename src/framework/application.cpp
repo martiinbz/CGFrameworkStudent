@@ -8,6 +8,11 @@
 Application::Application(const char* caption, int width, int height)
 {
 	this->window = createWindow(caption, width, height);
+	start_x = 0;
+	start_y = 0;
+	end_x = 0;
+	end_y = 0;
+	first_click = true;
 
 	int w,h;
 	SDL_GetWindowSize(window,&w,&h);
@@ -28,6 +33,7 @@ Application::~Application()
 void Application::Init(void)
 {
 	std::cout << "Initiating app..." << std::endl;
+
 }
 
 // Render one frame
@@ -42,10 +48,6 @@ void Application::Render(void)
 	Vector2 p0(100.0f,200.0f);
 	Vector2 p1(100.0f, 500.0f);
 	Vector2 p2(500.0f, 200.0f);
-	framebuffer.DrawRect(x, y, w, h, Color(255,0, 0),5,TRUE,Color(255,255,255));
-	framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(255,255,0));
-	framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(255, 255, 255));
-	framebuffer.DrawTriangle( p0, p1, p2, Color(255, 0, 0), TRUE, Color(255, 255, 0));
 	Image toolbar;
 	toolbar.LoadPNG("images/toolbar.png", true);
 
@@ -71,7 +73,7 @@ void Application::Render(void)
 	//CREAMOS BOTONES PARA TODAS LAS IMAGENES
 
 
-	
+
 	Button loadbutton(load, Vector2(0, 10));
 	Button savebutton(save, Vector2(40, 10));
 	Button blackbutton(black, Vector2(80, 10));
@@ -89,9 +91,9 @@ void Application::Render(void)
 
 
 
-	
+
 	framebuffer.Fill(Color::WHITE);
-	framebuffer.DrawImage(loadbutton.GetImage(),loadbutton.GetX(),loadbutton.GetY(), 5);
+	framebuffer.DrawImage(loadbutton.GetImage(), loadbutton.GetX(), loadbutton.GetY(), 5);
 	framebuffer.DrawImage(savebutton.GetImage(), savebutton.GetX(), savebutton.GetY(), 5);
 	framebuffer.DrawImage(blackbutton.GetImage(), blackbutton.GetX(), blackbutton.GetY(), 5);
 	framebuffer.DrawImage(redbutton.GetImage(), redbutton.GetX(), redbutton.GetY(), 5);
@@ -105,20 +107,16 @@ void Application::Render(void)
 	framebuffer.DrawImage(linebutton.GetImage(), linebutton.GetX(), linebutton.GetY(), 5);
 	framebuffer.DrawImage(rectanglebutton.GetImage(), rectanglebutton.GetX(), rectanglebutton.GetY(), 5);
 	framebuffer.DrawImage(circlebutton.GetImage(), circlebutton.GetX(), circlebutton.GetY(), 5);
-
-
-
-
-	
-
-
+	//framebuffer.DrawRect(x, y, w, h, Color(255, 0, 0), 5, TRUE, Color(0, 0, 0));
+	framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(0, 0, 0));
+	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(0, 0, 0));
+	//framebuffer.DrawTriangle(p0, p1, p2, Color(255, 0, 0), TRUE, Color(0, 0, 0));
 	
 	
 
-	
 
-	
-	//framebuffer.DrawImage(load, 0, 0, 5);
+
+
 	
 	framebuffer.Render();
 	
@@ -134,28 +132,60 @@ void Application::Update(float seconds_elapsed)
 void Application::OnKeyPressed( SDL_KeyboardEvent event )
 {
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
-	switch(event.keysym.sym) {
+	switch (event.keysym.sym) {
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
+		/*case SDLK_1: //DRAW LINE
+		case SDLK_2: //DRAW RECTANGLE
+		case SDLK_3: //DRAW CIRCLE
+		case SDLK_4: //DRAW TRIANGLE
+		case SDLK_5: //PAINT
+		case SDLK_6: //ANIMATION
+		case SDLK_f: //FILL SHAPES
+		case SDLK_PLUS: //INCREASE BORDER WIDTH
+		case SDLK_MINUS: //DECREASE BORDE WIDTH*/
 	}
 }
 
 void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 {
-	if (event.button == SDL_BUTTON_LEFT) {
 
+	if (event.button == SDL_BUTTON_LEFT) {
+		start_x = mouse_position.x;
+		start_y = mouse_position.y;
+		first_click = true;
+		std::cerr << "Start position:"+ start_x + start_y << std::endl;
+		 
+		
+		
+
+		
 	}
 }
 
 void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 {
 	if (event.button == SDL_BUTTON_LEFT) {
+		end_x = mouse_position.x;
+		end_y = mouse_position.y;
+		
+		
+		framebuffer.DrawLineDDA(start_x, start_y, end_x, end_y, Color(0, 0, 0));
+		
+		
 
 	}
 }
 
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
+	if (event.button == SDL_BUTTON_LEFT) {
+		mouse_position.x = event.x;
+		mouse_position.y = event.y;
+		
+		
 	
+		
+	}
 }
 
 void Application::OnWheel(SDL_MouseWheelEvent event)

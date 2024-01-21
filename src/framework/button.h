@@ -18,6 +18,7 @@ public:
     Image Button::GetImage();
     int Button::GetX();
     int Button::GetY();
+    
  
 };
 
