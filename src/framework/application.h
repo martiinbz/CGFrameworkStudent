@@ -12,9 +12,18 @@ class Application
 {
 
 private:
+	struct Line
+	{
+		int start_x;
+		int start_y;
+		int end_x;
+		int end_y;
+		Color color;
+	};
 	bool first_click;
 	int start_x, start_y;
 	int end_x, end_y;
+	std::vector<Line> lines;
 	
 public:
 

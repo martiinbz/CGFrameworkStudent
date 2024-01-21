@@ -8,11 +8,11 @@
 Application::Application(const char* caption, int width, int height)
 {
 	this->window = createWindow(caption, width, height);
-	start_x = 0;
-	start_y = 0;
-	end_x = 0;
-	end_y = 0;
-	first_click = true;
+	start_x = NULL;
+	start_y = NULL;
+	end_x = NULL;
+	end_y = NULL;
+	first_click = false;
 
 	int w,h;
 	SDL_GetWindowSize(window,&w,&h);
@@ -111,6 +111,17 @@ void Application::Render(void)
 	framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(0, 0, 0));
 	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(0, 0, 0));
 	//framebuffer.DrawTriangle(p0, p1, p2, Color(255, 0, 0), TRUE, Color(0, 0, 0));
+
+
+	for (const auto& line : lines)
+	{
+		framebuffer.DrawLineDDA(line.start_x, line.start_y, line.end_x, line.end_y, line.color);
+	}
+	if (first_click)
+	{
+		framebuffer.DrawLineDDA(start_x, start_y, mouse_position.x, mouse_position.y, Color(0, 0, 0));
+	}
+	
 	
 	
 	
@@ -166,13 +177,19 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 {
 	if (event.button == SDL_BUTTON_LEFT) {
-		end_x = mouse_position.x;
-		end_y = mouse_position.y;
-		
-		
-		framebuffer.DrawLineDDA(start_x, start_y, end_x, end_y, Color(0, 0, 0));
-		std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
-		std::cerr << "End position: " << end_x << ", " << end_y << std::endl;
+
+		if (first_click) {
+			end_x = mouse_position.x;
+			end_y = mouse_position.y;
+			std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
+			std::cerr << "End position: " << end_x << ", " << end_y << std::endl;
+			lines.push_back({ start_x, start_y, end_x, end_y, Color(0, 0, 0) });
+			
+
+
+		}
+		first_click = false;
+	
 		
 		
 
@@ -182,8 +199,15 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
 	if (event.button == SDL_BUTTON_LEFT) {
-		mouse_position.x = event.x;
-		mouse_position.y = event.y;
+
+		if (first_click) {
+			mouse_position.x = event.x;
+			mouse_position.y = event.y;
+			framebuffer.DrawLineDDA(start_x, start_y, event.x,event.y, Color(0, 0, 0));
+
+
+		}
+		
 		
 		
 	
