@@ -13,6 +13,7 @@ Application::Application(const char* caption, int width, int height)
 	end_x = NULL;
 	end_y = NULL;
 	first_click = false;
+	draw_lines = false;
 
 	int w,h;
 	SDL_GetWindowSize(window,&w,&h);
@@ -113,6 +114,8 @@ void Application::Render(void)
 	//framebuffer.DrawTriangle(p0, p1, p2, Color(255, 0, 0), TRUE, Color(0, 0, 0));
 
 
+	
+	
 	for (const auto& line : lines)
 	{
 		framebuffer.DrawLineDDA(line.start_x, line.start_y, line.end_x, line.end_y, line.color);
@@ -121,8 +124,6 @@ void Application::Render(void)
 	{
 		framebuffer.DrawLineDDA(start_x, start_y, mouse_position.x, mouse_position.y, Color(0, 0, 0));
 	}
-	
-	
 	
 	
 
@@ -146,8 +147,14 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
 	switch (event.keysym.sym) {
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
-		/*case SDLK_1: //DRAW LINE
-		case SDLK_2: //DRAW RECTANGLE
+		case SDLK_1: //DRAW LINE	
+			if (!draw_lines) {
+				draw_lines = true;
+			}
+			else {
+				draw_lines = false;
+			};
+		/*case SDLK_2: //DRAW RECTANGLE
 		case SDLK_3: //DRAW CIRCLE
 		case SDLK_4: //DRAW TRIANGLE
 		case SDLK_5: //PAINT
@@ -162,10 +169,14 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 {
 
 	if (event.button == SDL_BUTTON_LEFT) {
-		start_x = mouse_position.x;
-		start_y = mouse_position.y;
-		first_click = true;
-		std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
+		if (draw_lines) {
+			start_x = mouse_position.x;
+			start_y = mouse_position.y;
+			first_click = true;
+			std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
+
+		}
+		
 		 
 		
 		
@@ -178,17 +189,25 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 {
 	if (event.button == SDL_BUTTON_LEFT) {
 
-		if (first_click) {
-			end_x = mouse_position.x;
-			end_y = mouse_position.y;
-			std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
-			std::cerr << "End position: " << end_x << ", " << end_y << std::endl;
-			lines.push_back({ start_x, start_y, end_x, end_y, Color(0, 0, 0) });
-			
+		if (draw_lines) {
+			if (first_click) {
+				end_x = mouse_position.x;
+				end_y = mouse_position.y;
+				std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
+				std::cerr << "End position: " << end_x << ", " << end_y << std::endl;
+				lines.push_back({ start_x, start_y, end_x, end_y, Color(0, 0, 0) });
+
+
+
+			}
+			first_click = false;
+
+
+
 
 
 		}
-		first_click = false;
+		
 	
 		
 		
@@ -203,9 +222,6 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 		if (first_click) {
 			mouse_position.x = event.x;
 			mouse_position.y = event.y;
-			framebuffer.DrawLineDDA(start_x, start_y, event.x,event.y, Color(0, 0, 0));
-
-
 		}
 		
 		

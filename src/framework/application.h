@@ -20,7 +20,7 @@ private:
 		int end_y;
 		Color color;
 	};
-	bool first_click;
+	bool first_click, draw_lines;
 	int start_x, start_y;
 	int end_x, end_y;
 	std::vector<Line> lines;
