@@ -113,6 +113,7 @@ void Application::Render(void)
 	//framebuffer.DrawTriangle(p0, p1, p2, Color(255, 0, 0), TRUE, Color(0, 0, 0));
 	
 	
+	
 
 
 
@@ -153,7 +154,7 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 		start_x = mouse_position.x;
 		start_y = mouse_position.y;
 		first_click = true;
-		std::cerr << "Start position:"+ start_x + start_y << std::endl;
+		std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
 		 
 		
 		
@@ -170,6 +171,8 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 		
 		
 		framebuffer.DrawLineDDA(start_x, start_y, end_x, end_y, Color(0, 0, 0));
+		std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
+		std::cerr << "End position: " << end_x << ", " << end_y << std::endl;
 		
 		
 
