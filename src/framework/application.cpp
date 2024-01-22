@@ -2,7 +2,7 @@
 #include "mesh.h"
 #include "shader.h"
 #include "utils.h" 
-#include "button.h";
+#include "button.h"
 
 
 Application::Application(const char* caption, int width, int height)
@@ -12,8 +12,13 @@ Application::Application(const char* caption, int width, int height)
 	start_y = NULL;
 	end_x = NULL;
 	end_y = NULL;
+	height = NULL;
+	width = NULL;
 	first_click = false;
 	draw_lines = false;
+	draw_rectangles = false;
+	draw_circles = false;
+
 
 	int w,h;
 	SDL_GetWindowSize(window,&w,&h);
@@ -25,10 +30,14 @@ Application::Application(const char* caption, int width, int height)
 	this->keystate = SDL_GetKeyboardState(nullptr);
 
 	this->framebuffer.Resize(w, h);
+
+
+	
 }
 
 Application::~Application()
 {
+	
 }
 
 void Application::Init(void)
@@ -120,13 +129,18 @@ void Application::Render(void)
 	{
 		framebuffer.DrawLineDDA(line.start_x, line.start_y, line.end_x, line.end_y, line.color);
 	}
-	if (first_click)
+	if ( draw_lines && first_click)
 	{
 		framebuffer.DrawLineDDA(start_x, start_y, mouse_position.x, mouse_position.y, Color(0, 0, 0));
 	}
-	
-	
-
+	for (const auto& rect : rectangles)
+	{
+		framebuffer.DrawRect(rect.start_x, rect.start_y, rect.end_x, rect.end_y, Color(0,0,0),5,true,Color(0,255,0));
+	}
+	/*if (draw_rectangles && first_click)
+	{
+		framebuffer.DrawRect(start_x, start_y, mouse_position.x, mouse_position.y, Color(0, 0, 0));
+	}*/
 
 
 
@@ -146,6 +160,11 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 {
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
 	switch (event.keysym.sym) {
+
+		draw_lines = false;
+		draw_rectangles = false;
+		draw_circles = false;
+		
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
 		case SDLK_1: //DRAW LINE	
 			if (!draw_lines) {
@@ -154,14 +173,68 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 			else {
 				draw_lines = false;
 			};
-		/*case SDLK_2: //DRAW RECTANGLE
+		case SDLK_2: //DRAW RECTANGLE
+			if (!draw_rectangles) {
+				draw_rectangles = true;
+			}
+			else {
+				draw_rectangles = false;
+			}
+	
 		case SDLK_3: //DRAW CIRCLE
+			if (!draw_circles){
+				draw_circles=true;
+			}
+			else{
+				draw_circles=false;
+			}
+		
+		
 		case SDLK_4: //DRAW TRIANGLE
+			if(!draw_triangles){
+			    draw_triangles=true;
+			}
+			else{
+				draw_triangles=false;
+			}
+			
 		case SDLK_5: //PAINT
+			if(!paint){
+			    paint=true;
+			}
+			else{
+				paint=false;
+			}
 		case SDLK_6: //ANIMATION
+			if(!animation){
+				animation=true;
+			}
+			else{
+				animation=false;
+			}
+			
 		case SDLK_f: //FILL SHAPES
+			if(!fill_shapes){
+				fill_shapes=true;
+			}
+			else{
+				fill_shapes=false;
+			}
 		case SDLK_PLUS: //INCREASE BORDER WIDTH
-		case SDLK_MINUS: //DECREASE BORDE WIDTH*/
+			if(!increase_border_width){
+				increase_border_width=true;
+			}
+			else{
+				increase_border_width=false;
+			}
+		/*case SDLK_MINUS: //DECREASE BORDE WIDTH
+			if(!decrease_borde_width){
+				decrease_borde_width=true;
+			}
+			else{
+				decrease_borde_width=false;
+			} */
+			
 	}
 }
 
@@ -173,15 +246,15 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 			start_x = mouse_position.x;
 			start_y = mouse_position.y;
 			first_click = true;
-			std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
-
+		}
+		if (draw_rectangles) {
+			start_x = mouse_position.x;
+			start_y = mouse_position.y;
+			first_click = true;
 		}
 		
 		 
-		
-		
-
-		
+	
 	}
 }
 
@@ -193,25 +266,30 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 			if (first_click) {
 				end_x = mouse_position.x;
 				end_y = mouse_position.y;
-				std::cerr << "Start position: " << start_x << ", " << start_y << std::endl;
-				std::cerr << "End position: " << end_x << ", " << end_y << std::endl;
+				
+
 				lines.push_back({ start_x, start_y, end_x, end_y, Color(0, 0, 0) });
 
 
 
 			}
-			first_click = false;
-
-
-
-
-
 		}
-		
-	
-		
-		
+		if (draw_rectangles) {
+			if (first_click) {
 
+				width = mouse_position.x - start_x;
+				height = mouse_position.y - start_y;
+
+				
+				rectangles.push_back({ start_x, start_y, width, height, Color(0, 0, 0) });
+
+
+			}
+		}
+
+
+
+		first_click = false;
 	}
 }
 
@@ -223,9 +301,7 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 			mouse_position.x = event.x;
 			mouse_position.y = event.y;
 		}
-		
-		
-		
+
 	
 		
 	}

@@ -20,10 +20,13 @@ private:
 		int end_y;
 		Color color;
 	};
-	bool first_click, draw_lines;
+	bool first_click, draw_lines, draw_rectangles, draw_circles,draw_triangles,paint,animation,fill_shapes,increase_border_width,decrease_border_width;
 	int start_x, start_y;
 	int end_x, end_y;
+	int height, width;
 	std::vector<Line> lines;
+	std::vector<Line> rectangles;
+
 	
 public:
 
