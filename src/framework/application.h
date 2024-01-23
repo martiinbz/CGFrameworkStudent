@@ -7,6 +7,7 @@
 #include "main/includes.h"
 #include "framework.h"
 #include "image.h"
+#include "button.h"
 
 class Application
 {
@@ -20,12 +21,50 @@ private:
 		int end_y;
 		Color color;
 	};
+	struct Rectangle
+	{
+		int start_x;
+		int start_y;
+		int width;
+		int height;
+		Color color;
+	};
+	struct Circle
+	{
+		int start_x;
+		int start_y;
+		int radius;
+		Color color;
+	};
+	struct Triangle {
+		Vector2 v1;
+		Vector2 v2;
+		Vector2 v3;
+		Color color;
+	};
+	struct Pixel {
+		int x;
+		int y;
+		Color color;
+	};
+
+
 	bool first_click, draw_lines, draw_rectangles, draw_circles,draw_triangles,paint,animation,fill_shapes,increase_border_width,decrease_border_width;
 	int start_x, start_y;
 	int end_x, end_y;
 	int height, width;
+	Vector2 v1, v2, v3;
+	//CARGAMOS TODAS LAS IMAGENES
+	Image load, save, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle;
+
+	
 	std::vector<Line> lines;
-	std::vector<Line> rectangles;
+	std::vector<Rectangle> rectangles;
+	std::vector<Circle> circles;
+	std::vector<Triangle> triangles;
+	std::vector<Pixel> pixels;
+
+	
 
 	
 public:

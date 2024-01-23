@@ -2,7 +2,7 @@
 #include "mesh.h"
 #include "shader.h"
 #include "utils.h" 
-#include "button.h"
+
 
 
 Application::Application(const char* caption, int width, int height)
@@ -29,10 +29,7 @@ Application::Application(const char* caption, int width, int height)
 	this->window_height = h;
 	this->keystate = SDL_GetKeyboardState(nullptr);
 
-	this->framebuffer.Resize(w, h);
-
-
-	
+	this->framebuffer.Resize(w, h);	
 }
 
 Application::~Application()
@@ -50,17 +47,7 @@ void Application::Init(void)
 void Application::Render(void)
 {
 	// ...
-	int x = 500;
-	int y = 400;
-	int w = 300;
-	int h = 100;
-	int r = 100;
-	Vector2 p0(100.0f,200.0f);
-	Vector2 p1(100.0f, 500.0f);
-	Vector2 p2(500.0f, 200.0f);
-	Image toolbar;
-	toolbar.LoadPNG("images/toolbar.png", true);
-
+	Vector2 v1, v2, v3;
 
 	//CARGAMOS TODAS LAS IMAGENES
 	Image load, save, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle;
@@ -82,8 +69,6 @@ void Application::Render(void)
 
 	//CREAMOS BOTONES PARA TODAS LAS IMAGENES
 
-
-
 	Button loadbutton(load, Vector2(0, 10));
 	Button savebutton(save, Vector2(40, 10));
 	Button blackbutton(black, Vector2(80, 10));
@@ -98,6 +83,9 @@ void Application::Render(void)
 	Button linebutton(line, Vector2(440, 10));
 	Button rectanglebutton(rectangle, Vector2(480, 10));
 	Button circlebutton(circle, Vector2(520, 10));
+
+
+	
 
 
 
@@ -118,10 +106,10 @@ void Application::Render(void)
 	framebuffer.DrawImage(rectanglebutton.GetImage(), rectanglebutton.GetX(), rectanglebutton.GetY(), 5);
 	framebuffer.DrawImage(circlebutton.GetImage(), circlebutton.GetX(), circlebutton.GetY(), 5);
 	//framebuffer.DrawRect(x, y, w, h, Color(255, 0, 0), 5, TRUE, Color(0, 0, 0));
-	framebuffer.DrawLineDDA(x, y, x + 100 * cos(time), y + 100 * sin(time), Color(0, 0, 0));
+
 	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(0, 0, 0));
 	//framebuffer.DrawTriangle(p0, p1, p2, Color(255, 0, 0), TRUE, Color(0, 0, 0));
-
+	
 
 	
 	
@@ -135,12 +123,27 @@ void Application::Render(void)
 	}
 	for (const auto& rect : rectangles)
 	{
-		framebuffer.DrawRect(rect.start_x, rect.start_y, rect.end_x, rect.end_y, Color(0,0,0),5,true,Color(0,255,0));
+		framebuffer.DrawRect(rect.start_x, rect.start_y, rect.width, rect.height, Color(0,0,0),5,true,Color(0,255,0));
 	}
 	/*if (draw_rectangles && first_click)
 	{
 		framebuffer.DrawRect(start_x, start_y, mouse_position.x, mouse_position.y, Color(0, 0, 0));
 	}*/
+	for (const auto& circ : circles)
+	{
+		framebuffer.DrawCircle(circ.start_x, circ.start_y, circ.radius, Color(0, 0, 0), 5, true, Color(0, 255, 0));
+	}
+	for (const auto& trian : triangles)
+	{
+		framebuffer.DrawTriangle(trian.v1, trian.v2, trian.v3, Color(0, 0, 0),false,Color(0,255,0));
+	}
+	for (const auto& pix : pixels)
+	{
+		framebuffer.SetPixel(pix.x, pix.y,Color(0, 0, 0));
+	}
+
+
+
 
 
 
@@ -161,21 +164,21 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
 	switch (event.keysym.sym) {
 
-		draw_lines = false;
-		draw_rectangles = false;
-		draw_circles = false;
-		
+
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
 		case SDLK_1: //DRAW LINE	
 			if (!draw_lines) {
 				draw_lines = true;
+				
+
 			}
 			else {
 				draw_lines = false;
-			};
+			}
 		case SDLK_2: //DRAW RECTANGLE
 			if (!draw_rectangles) {
 				draw_rectangles = true;
+				
 			}
 			else {
 				draw_rectangles = false;
@@ -227,7 +230,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 			else{
 				increase_border_width=false;
 			}
-		/*case SDLK_MINUS: //DECREASE BORDE WIDTH
+		/*case SDLK_MINUS: //DECREASE BORDER WIDTH
 			if(!decrease_borde_width){
 				decrease_borde_width=true;
 			}
@@ -240,7 +243,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 
 void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 {
-
+	
 	if (event.button == SDL_BUTTON_LEFT) {
 		if (draw_lines) {
 			start_x = mouse_position.x;
@@ -252,8 +255,19 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 			start_y = mouse_position.y;
 			first_click = true;
 		}
-		
-		 
+		if (draw_circles) {
+			start_x = mouse_position.x;
+			start_y = mouse_position.y;
+			first_click = true;
+		}
+		if (draw_triangles){
+	
+			v1=Vector2(mouse_position.x, mouse_position.y);
+			first_click = true;
+		}
+		if (paint) {
+			first_click = true;
+		}
 	
 	}
 }
@@ -286,6 +300,29 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 
 			}
 		}
+		if (draw_circles) {
+			if (first_click) {
+
+				int radius = mouse_position.x - start_x;
+
+
+				circles.push_back({ start_x, start_y,radius, Color(0, 0, 0) });
+
+
+			}
+
+
+		}
+		if (draw_triangles){
+			if(first_click){
+				v2= Vector2(mouse_position.x, mouse_position.y);
+				v3= Vector2(v2.x + (v2.x - v1.x), v1.y);
+
+				triangles.push_back({ v1,v2,v3, Color(0, 0, 0) });
+				
+			}
+		}
+		
 
 
 
@@ -300,6 +337,9 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 		if (first_click) {
 			mouse_position.x = event.x;
 			mouse_position.y = event.y;
+		}
+		if (paint && first_click) {
+			pixels.push_back({ event.x,event.y,Color(0,0,0)});
 		}
 
 	
@@ -318,3 +358,4 @@ void Application::OnFileChanged(const char* filename)
 { 
 	Shader::ReloadSingleShader(filename);
 }
+
