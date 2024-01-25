@@ -6,8 +6,9 @@
 
 #include "main/includes.h"
 #include "framework.h"
-#include "image.h"
 #include "button.h"
+#include "image.h"
+
 
 class Application
 {
@@ -49,15 +50,15 @@ private:
 	};
 
 
-	bool first_click, draw_lines, draw_rectangles, draw_circles,draw_triangles,paint,animation,fill_shapes,increase_border_width,decrease_border_width;
+	bool first_click, draw_lines, draw_rectangles, draw_circles,draw_triangles,paint_mode,animation,fill_shapes,increase_border_width,decrease_border_width;
 	int start_x, start_y;
 	int end_x, end_y;
 	int height, width;
 	Vector2 v1, v2, v3;
 	//CARGAMOS TODAS LAS IMAGENES
-	Image load, save, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle;
-
 	
+	Image load, save,paint, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle;
+	Button loadbutton,savebutton,paintbutton, blackbutton, redbutton, greenbutton, bluebutton, yellowbutton, pinkbutton, cyanbutton, whitebutton, eraserbutton, linebutton, rectanglebutton, circlebutton;
 	std::vector<Line> lines;
 	std::vector<Rectangle> rectangles;
 	std::vector<Circle> circles;

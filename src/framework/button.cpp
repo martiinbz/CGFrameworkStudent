@@ -6,9 +6,15 @@
 
 
 
+Button::Button() {
 
-    Button::Button(const Image& img, const Vector2& pos)
-        : image(img), position(pos) {}
+}
+Button::Button(const Image& img, const Vector2& pos) {
+    image = img;
+    position = pos;
+
+    }
+        
 
     bool Button::IsMouseInside(const Vector2& mousePosition)
     {

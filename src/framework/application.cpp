@@ -2,6 +2,8 @@
 #include "mesh.h"
 #include "shader.h"
 #include "utils.h" 
+#include "image.h"
+#include "button.h"
 
 
 
@@ -16,9 +18,13 @@ Application::Application(const char* caption, int width, int height)
 	width = NULL;
 	first_click = false;
 	draw_lines = false;
+	draw_triangles = false;
 	draw_rectangles = false;
 	draw_circles = false;
+	paint_mode = false;
+	
 
+	
 
 	int w,h;
 	SDL_GetWindowSize(window,&w,&h);
@@ -50,10 +56,12 @@ void Application::Render(void)
 	Vector2 v1, v2, v3;
 
 	//CARGAMOS TODAS LAS IMAGENES
-	Image load, save, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle;
+	
 
+	
 	load.LoadPNG("images/load.png", false);
 	save.LoadPNG("images/save.png", false);
+	paint.LoadPNG("images/pincel.png", false);
 	black.LoadPNG("images/black.png", false);
 	red.LoadPNG("images/red.png", false);
 	green.LoadPNG("images/green.png", false);
@@ -67,22 +75,25 @@ void Application::Render(void)
 	rectangle.LoadPNG("images/rectangle.png", false);
 	circle.LoadPNG("images/circle.png", false);
 
-	//CREAMOS BOTONES PARA TODAS LAS IMAGENES
 
-	Button loadbutton(load, Vector2(0, 10));
-	Button savebutton(save, Vector2(40, 10));
-	Button blackbutton(black, Vector2(80, 10));
-	Button redbutton(red, Vector2(120, 10));
-	Button greenbutton(green, Vector2(160, 10));
-	Button bluebutton(blue, Vector2(200, 10));
-	//Button yellowbutton(yellow, Vector2(240, 10));
-	Button pinkbutton(pink, Vector2(280, 10));
-	Button cyanbutton(cyan, Vector2(320, 10));
-	//Button whitebutton(white, Vector2(360, 10));
-	Button eraserbutton(eraser, Vector2(400, 10));
-	Button linebutton(line, Vector2(440, 10));
-	Button rectanglebutton(rectangle, Vector2(480, 10));
-	Button circlebutton(circle, Vector2(520, 10));
+	//CREAMOS BOTONES PARA TODAS LAS IMAGENES
+	
+	loadbutton = std::move(Button(load, Vector2(0,10)));
+	savebutton = std::move(Button(save, Vector2(40, 10)));
+	blackbutton = std::move(Button(black, Vector2(80, 10)));
+	redbutton = std::move(Button(red, Vector2(120, 10)));
+	greenbutton = std::move(Button(green, Vector2(160, 10)));
+	bluebutton = std::move(Button(blue, Vector2(200, 10)));
+	yellowbutton = std::move(Button(yellow, Vector2(240, 10)));
+	pinkbutton = std::move(Button(pink, Vector2(280, 10)));
+	cyanbutton = std::move(Button(cyan, Vector2(320, 10)));
+	whitebutton = std::move(Button(white, Vector2(360, 10)));
+	eraserbutton = std::move(Button(eraser, Vector2(400, 10)));
+	linebutton = std::move(Button(line, Vector2(440, 10)));
+	rectanglebutton = std::move(Button(rectangle, Vector2(480, 10)));
+	circlebutton = std::move(Button(circle, Vector2(520, 10)));
+	paintbutton = std::move(Button(paint, Vector2(560, 10)));
+	
 
 
 	
@@ -105,6 +116,7 @@ void Application::Render(void)
 	framebuffer.DrawImage(linebutton.GetImage(), linebutton.GetX(), linebutton.GetY(), 5);
 	framebuffer.DrawImage(rectanglebutton.GetImage(), rectanglebutton.GetX(), rectanglebutton.GetY(), 5);
 	framebuffer.DrawImage(circlebutton.GetImage(), circlebutton.GetX(), circlebutton.GetY(), 5);
+	framebuffer.DrawImage(paintbutton.GetImage(), paintbutton.GetX(), paintbutton.GetY(), 5);
 	//framebuffer.DrawRect(x, y, w, h, Color(255, 0, 0), 5, TRUE, Color(0, 0, 0));
 
 	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(0, 0, 0));
@@ -163,73 +175,121 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 {
 	// KEY CODES: https://wiki.libsdl.org/SDL2/SDL_Keycode
 	switch (event.keysym.sym) {
-
+		
 
 		case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
-		case SDLK_1: //DRAW LINE	
+		case SDLK_1://DRAW LINE
+		{
 			if (!draw_lines) {
 				draw_lines = true;
-				
+
+				draw_triangles = false;
+				draw_rectangles = false;
+				draw_circles = false;
+				paint_mode = false;
+
 
 			}
 			else {
 				draw_lines = false;
 			}
+			break;
+		}
 		case SDLK_2: //DRAW RECTANGLE
+		{
 			if (!draw_rectangles) {
 				draw_rectangles = true;
-				
+
+				draw_lines = false;
+				draw_triangles = false;
+				draw_circles = false;
+				paint_mode = false;
 			}
 			else {
 				draw_rectangles = false;
 			}
+			break;
+			
+		}
 	
 		case SDLK_3: //DRAW CIRCLE
-			if (!draw_circles){
-				draw_circles=true;
+		{
+			if (!draw_circles) {
+				draw_circles = true;
+
+				draw_rectangles = false;
+				draw_lines = false;
+				draw_triangles = false;
+				paint_mode = false;
 			}
-			else{
-				draw_circles=false;
+			else {
+				draw_circles = false;
 			}
+			break;
+		}
 		
 		
 		case SDLK_4: //DRAW TRIANGLE
-			if(!draw_triangles){
-			    draw_triangles=true;
+		{
+			if (!draw_triangles) {
+				draw_triangles = true;
+
+				draw_circles = false;
+				draw_rectangles = false;
+				draw_lines = false;
+				paint_mode = false;
+
 			}
-			else{
-				draw_triangles=false;
-			}
+			else {
+				draw_triangles = false;
+			}	
+			break;
+		
+			
+		}
 			
 		case SDLK_5: //PAINT
-			if(!paint){
-			    paint=true;
+		{
+			if (!paint_mode) {
+				paint_mode = true;
+
+				draw_triangles = false;
+				draw_circles = false;
+				draw_rectangles = false;
+				draw_lines = false;
+				
+
 			}
-			else{
-				paint=false;
-			}
+			else {
+				paint_mode = false;
+
+			}	
+			break;	
+		}
 		case SDLK_6: //ANIMATION
-			if(!animation){
-				animation=true;
-			}
-			else{
-				animation=false;
+		{
+			if (!animation) {
+				animation = true;
 			}
 			
+		}
+			
 		case SDLK_f: //FILL SHAPES
-			if(!fill_shapes){
-				fill_shapes=true;
+		{
+			if (!fill_shapes) {
+				fill_shapes = true;
 			}
-			else{
-				fill_shapes=false;
-			}
+			
+		}
 		case SDLK_PLUS: //INCREASE BORDER WIDTH
-			if(!increase_border_width){
-				increase_border_width=true;
+		{
+			if (!increase_border_width) {
+				increase_border_width = true;
 			}
-			else{
-				increase_border_width=false;
+			else {
+				increase_border_width = false;
 			}
+		}
 		/*case SDLK_MINUS: //DECREASE BORDER WIDTH
 			if(!decrease_borde_width){
 				decrease_borde_width=true;
@@ -261,11 +321,10 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 			first_click = true;
 		}
 		if (draw_triangles){
-	
 			v1=Vector2(mouse_position.x, mouse_position.y);
 			first_click = true;
 		}
-		if (paint) {
+		if (paint_mode) {
 			first_click = true;
 		}
 	
@@ -338,7 +397,7 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 			mouse_position.x = event.x;
 			mouse_position.y = event.y;
 		}
-		if (paint && first_click) {
+		if (paint_mode && first_click) {
 			pixels.push_back({ event.x,event.y,Color(0,0,0)});
 		}
 
