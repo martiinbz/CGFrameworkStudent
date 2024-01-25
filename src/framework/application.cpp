@@ -117,10 +117,10 @@ void Application::Render(void)
 	framebuffer.DrawImage(rectanglebutton.GetImage(), rectanglebutton.GetX(), rectanglebutton.GetY(), 5);
 	framebuffer.DrawImage(circlebutton.GetImage(), circlebutton.GetX(), circlebutton.GetY(), 5);
 	framebuffer.DrawImage(paintbutton.GetImage(), paintbutton.GetX(), paintbutton.GetY(), 5);
-	//framebuffer.DrawRect(x, y, w, h, Color(255, 0, 0), 5, TRUE, Color(0, 0, 0));
-
-	//framebuffer.DrawCircle(x, y, r, Color(255, 0, 0), 1000, TRUE, Color(0, 0, 0));
-	//framebuffer.DrawTriangle(p0, p1, p2, Color(255, 0, 0), TRUE, Color(0, 0, 0));
+	//fill button
+	//increase width
+	//decrease width
+	
 	
 
 	
@@ -305,10 +305,11 @@ void Application::OnMouseButtonDown( SDL_MouseButtonEvent event )
 {
 	
 	if (event.button == SDL_BUTTON_LEFT) {
-		if (draw_lines) {
+		if (draw_lines || linebutton.IsMouseInside(mouse_position)) {
 			start_x = mouse_position.x;
 			start_y = mouse_position.y;
 			first_click = true;
+			draw_lines = true;
 		}
 		if (draw_rectangles) {
 			start_x = mouse_position.x;
