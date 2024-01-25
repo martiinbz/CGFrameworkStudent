@@ -29,6 +29,7 @@ private:
 		int width;
 		int height;
 		Color color;
+		bool fill;
 	};
 	struct Circle
 	{
@@ -36,34 +37,44 @@ private:
 		int start_y;
 		int radius;
 		Color color;
+		bool fill;
 	};
 	struct Triangle {
 		Vector2 v1;
 		Vector2 v2;
 		Vector2 v3;
 		Color color;
+		bool fill;
 	};
 	struct Pixel {
 		int x;
 		int y;
 		Color color;
 	};
+	struct Loaded_image {
+		int x;
+		int y;
+	};
 
 
-	bool first_click, draw_lines, draw_rectangles, draw_circles,draw_triangles,paint_mode,animation,fill_shapes,increase_border_width,decrease_border_width;
+	bool first_click, draw_lines, draw_rectangles, draw_circles, draw_triangles, paint_mode, animation, fill_shapes, increase_border_width, decrease_border_width, load_button, eraser_mode;
+
 	int start_x, start_y;
 	int end_x, end_y;
 	int height, width;
+	int draw_width;
 	Vector2 v1, v2, v3;
+	Color current_color;
 	//CARGAMOS TODAS LAS IMAGENES
 	
-	Image load, save,paint, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle;
-	Button loadbutton,savebutton,paintbutton, blackbutton, redbutton, greenbutton, bluebutton, yellowbutton, pinkbutton, cyanbutton, whitebutton, eraserbutton, linebutton, rectanglebutton, circlebutton;
+	Image load, save, paint, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle, triangle, fruits, increase, decrease, fill;
+	Button loadbutton, savebutton, paintbutton, blackbutton, redbutton, greenbutton, bluebutton, yellowbutton, pinkbutton, cyanbutton, whitebutton, eraserbutton, linebutton, rectanglebutton, circlebutton, trianglebutton, increasebutton, decreasebutton, fillbutton;
 	std::vector<Line> lines;
 	std::vector<Rectangle> rectangles;
 	std::vector<Circle> circles;
 	std::vector<Triangle> triangles;
 	std::vector<Pixel> pixels;
+	std::vector<Loaded_image> loaded_images;
 
 	
 
