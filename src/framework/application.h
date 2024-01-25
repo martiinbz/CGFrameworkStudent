@@ -8,6 +8,7 @@
 #include "framework.h"
 #include "button.h"
 #include "image.h"
+#include "ParticleSystem.h"
 
 
 class Application
@@ -30,6 +31,7 @@ private:
 		int height;
 		Color color;
 		bool fill;
+		int border_width;
 	};
 	struct Circle
 	{
@@ -55,6 +57,18 @@ private:
 		int x;
 		int y;
 	};
+	
+
+	struct Particle {
+		Vector2 position;
+		Vector2 velocity;
+		Color color;
+		float acceleration;
+		float ttl;
+		bool inactive;
+	};
+	static const int MAX_PARTICLES = 100;
+	Particle particles[MAX_PARTICLES];
 
 
 	bool first_click, draw_lines, draw_rectangles, draw_circles, draw_triangles, paint_mode, animation, fill_shapes, increase_border_width, decrease_border_width, load_button, eraser_mode;
@@ -65,6 +79,7 @@ private:
 	int draw_width;
 	Vector2 v1, v2, v3;
 	Color current_color;
+	
 	//CARGAMOS TODAS LAS IMAGENES
 	
 	Image load, save, paint, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle, triangle, fruits, increase, decrease, fill;
@@ -75,6 +90,7 @@ private:
 	std::vector<Triangle> triangles;
 	std::vector<Pixel> pixels;
 	std::vector<Loaded_image> loaded_images;
+
 
 	
 
@@ -126,4 +142,5 @@ public:
 		SDL_GetWindowSize(window,&w,&h);
 		return Vector2(float(w), float(h));
 	}
+	void Application::InitParticles(float seconds_elapsed);
 };

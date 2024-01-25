@@ -4,6 +4,7 @@
 #include "utils.h" 
 #include "image.h"
 #include "button.h"
+#include "ParticleSystem.h"
 
 
 
@@ -23,11 +24,11 @@ Application::Application(const char* caption, int width, int height)
 	draw_circles = false;
 	paint_mode = false;
 	draw_width = 2;
-	current_color = Color::BLACK;
+	current_color = Color::WHITE;
 	fill_shapes = false;
 	load_button = false;
 	eraser_mode = false;
-	
+	animation = false;
 
 	
 
@@ -41,6 +42,17 @@ Application::Application(const char* caption, int width, int height)
 	this->keystate = SDL_GetKeyboardState(nullptr);
 
 	this->framebuffer.Resize(w, h);	
+	for (int i = 0; i < MAX_PARTICLES; ++i) {
+		particles[i].position.x = static_cast<float>(rand() % 1280);
+		particles[i].position.y = static_cast<float>(rand() % 700);
+		particles[i].velocity.x = static_cast<float>(rand() % 1000) / 100.0f - 0.5f;  // Random normalized velocity
+		particles[i].velocity.y = static_cast<float>(rand() % 1000) / 100.0f - 0.5f;
+		particles[i].color = Color::YELLOW;  // White color
+		particles[i].acceleration = 0.1f;
+		particles[i].ttl = static_cast<float>(rand() % 100) / 50.0f;  // Random time to live
+		particles[i].inactive = false;
+	}
+	
 }
 
 Application::~Application()
@@ -83,7 +95,7 @@ void Application::Render(void)
 	decrease.LoadPNG("images/decrease.png", false);
 	fill.LoadPNG("images/fill.png", true);
 
-
+	
 
 	//INICIALIZAMOS TODOS LOS BOTONES
 	
@@ -116,7 +128,7 @@ void Application::Render(void)
 
 
 	//DIBUJAMOS TODAS LAS IMAGENES EN EL FRAMEBUFFER
-	framebuffer.Fill(Color::WHITE);
+	framebuffer.Fill(Color::BLACK);
 	framebuffer.DrawRect(0, 0, 1280, 50, Color::GRAY, 5, true, Color::GRAY);
 	framebuffer.DrawImage(loadbutton.GetImage(), loadbutton.GetX(), loadbutton.GetY(), 5);
 	framebuffer.DrawImage(savebutton.GetImage(), savebutton.GetX(), savebutton.GetY(), 5);
@@ -154,7 +166,7 @@ void Application::Render(void)
 	}
 	for (const auto& rect : rectangles)
 	{
-		framebuffer.DrawRect(rect.start_x, rect.start_y, rect.width, rect.height, rect.color,draw_width,rect.fill,rect.color);
+		framebuffer.DrawRect(rect.start_x, rect.start_y, rect.width, rect.height, rect.color,rect.border_width,rect.fill,rect.color);
 	}
 	
 	for (const auto& circ : circles)
@@ -177,12 +189,18 @@ void Application::Render(void)
 	{
 		framebuffer.DrawImage(fruits,img.x, img.y,fruits.height);
 	}
-
-
-
-
-
 	
+	if (animation) {
+		for (int i = 0; i < MAX_PARTICLES; ++i) {
+
+			framebuffer.SetPixel(static_cast<int>(particles[i].position.x), static_cast<int>(particles[i].position.y), particles[i].color);
+
+		}
+	}
+	
+
+
+
 	framebuffer.Render();
 	
 }
@@ -190,8 +208,30 @@ void Application::Render(void)
 // Called after render
 void Application::Update(float seconds_elapsed)
 {
+	if (animation) {
 
+		for (int i = 0; i < MAX_PARTICLES; ++i) {
+			if (!particles[i].inactive) {
+				particles[i].position.x += particles[i].velocity.x * seconds_elapsed;
+				particles[i].position.y += particles[i].velocity.y * seconds_elapsed;
+
+				// Update velocity or acceleration as needed
+				//particles[i].velocity.x += particles[i].acceleration * seconds_elapsed;
+
+				particles[i].ttl -= seconds_elapsed;
+
+				if (particles[i].position.x == 1279 || particles[i].position.x == 1 || particles[i].position.y == 699 || particles[i].position.y == 1) {
+					particles[i].inactive = true;
+				}
+			}
+		}
+
+
+	}
+	
 }
+
+
 
 //keyboard press event 
 void Application::OnKeyPressed( SDL_KeyboardEvent event )
@@ -293,6 +333,9 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 		{
 			if (!animation) {
 				animation = true;
+			}
+			else {
+				animation = false;
 			}
 		}
 			
@@ -525,7 +568,7 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 
 				width = mouse_position.x - start_x; //calculo de altura y anchura
 				height = mouse_position.y - start_y;
-				rectangles.push_back({ start_x, start_y, width, height, current_color,fill_shapes });
+				rectangles.push_back({ start_x, start_y, width, height, current_color,fill_shapes,draw_width });
 			}
 		}
 		if (draw_circles) {
@@ -582,3 +625,17 @@ void Application::OnFileChanged(const char* filename)
 	Shader::ReloadSingleShader(filename);
 }
 
+void Application::InitParticles(float seconds_elapsed) {
+	
+
+	for (int i = 0; i < MAX_PARTICLES; ++i) {
+		particles[i].position.x = static_cast<float>(rand() % 800);  // Assuming a 800x600 framebuffer
+		particles[i].position.y = static_cast<float>(rand() % 600);
+		particles[i].velocity.x = static_cast<float>(rand() % 100) / 100.0f - 0.5f;  // Random normalized velocity
+		particles[i].velocity.y = static_cast<float>(rand() % 100) / 100.0f - 0.5f;
+		particles[i].color = Color::BLACK;  // White color
+		particles[i].acceleration = 0.1f;
+		particles[i].ttl = static_cast<float>(rand() % 100) / 50.0f;  // Random time to live
+		particles[i].inactive = false;
+	}
+}
