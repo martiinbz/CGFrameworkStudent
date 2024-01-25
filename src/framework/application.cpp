@@ -193,7 +193,7 @@ void Application::Render(void)
 	if (animation) {
 		for (int i = 0; i < MAX_PARTICLES; ++i) {
 
-			framebuffer.SetPixel(static_cast<int>(particles[i].position.x), static_cast<int>(particles[i].position.y), particles[i].color);
+			framebuffer.SetPixelSafe(static_cast<int>(particles[i].position.x), static_cast<int>(particles[i].position.y), particles[i].color);
 
 		}
 	}
