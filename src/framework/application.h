@@ -8,13 +8,14 @@
 #include "framework.h"
 #include "button.h"
 #include "image.h"
-#include "ParticleSystem.h"
+
 
 
 class Application
 {
 
 private:
+	//ESTRUCTURAS DE LOS DIFERENTES VECTORES USADOS PARA ALMACENAR FORMAS
 	struct Line
 	{
 		int start_x;
@@ -67,21 +68,17 @@ private:
 		float ttl;
 		bool inactive;
 	};
+
+	//DECLARAMOS TODAS LAS VARIABLES QUE USAREMOS
 	static const int MAX_PARTICLES = 100;
 	Particle particles[MAX_PARTICLES];
-
-
 	bool first_click, draw_lines, draw_rectangles, draw_circles, draw_triangles, paint_mode, animation, fill_shapes, increase_border_width, decrease_border_width, load_button, eraser_mode;
-
 	int start_x, start_y;
 	int end_x, end_y;
 	int height, width;
-	int draw_width;
+	int draw_width, clicks;
 	Vector2 v1, v2, v3;
 	Color current_color;
-	
-	//CARGAMOS TODAS LAS IMAGENES
-	
 	Image load, save, paint, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle, triangle, fruits, increase, decrease, fill;
 	Button loadbutton, savebutton, paintbutton, blackbutton, redbutton, greenbutton, bluebutton, yellowbutton, pinkbutton, cyanbutton, whitebutton, eraserbutton, linebutton, rectanglebutton, circlebutton, trianglebutton, increasebutton, decreasebutton, fillbutton;
 	std::vector<Line> lines;
@@ -90,10 +87,6 @@ private:
 	std::vector<Triangle> triangles;
 	std::vector<Pixel> pixels;
 	std::vector<Loaded_image> loaded_images;
-
-
-	
-
 	
 public:
 
@@ -142,5 +135,5 @@ public:
 		SDL_GetWindowSize(window,&w,&h);
 		return Vector2(float(w), float(h));
 	}
-	void Application::InitParticles(float seconds_elapsed);
+
 };

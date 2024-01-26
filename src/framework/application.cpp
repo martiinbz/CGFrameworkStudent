@@ -4,7 +4,7 @@
 #include "utils.h" 
 #include "image.h"
 #include "button.h"
-#include "ParticleSystem.h"
+
 
 
 
@@ -29,6 +29,7 @@ Application::Application(const char* caption, int width, int height)
 	load_button = false;
 	eraser_mode = false;
 	animation = false;
+	int clicks = 0;
 
 	
 
@@ -42,14 +43,16 @@ Application::Application(const char* caption, int width, int height)
 	this->keystate = SDL_GetKeyboardState(nullptr);
 
 	this->framebuffer.Resize(w, h);	
+
+	//ASIGNAMOS VALORES ALEATORIOS INICIALES A TODAS LAS PARTICULAS
 	for (int i = 0; i < MAX_PARTICLES; ++i) {
 		particles[i].position.x = static_cast<float>(rand() % 1280);
 		particles[i].position.y = static_cast<float>(rand() % 700);
-		particles[i].velocity.x = static_cast<float>(rand() % 1000) / 100.0f - 0.5f;  // Random normalized velocity
+		particles[i].velocity.x = static_cast<float>(rand() % 1000) / 100.0f - 0.5f;
 		particles[i].velocity.y = static_cast<float>(rand() % 1000) / 100.0f - 0.5f;
-		particles[i].color = Color::YELLOW;  // White color
-		particles[i].acceleration = 0.1f;
-		particles[i].ttl = static_cast<float>(rand() % 100) / 50.0f;  // Random time to live
+		particles[i].color = Color::YELLOW;  
+		particles[i].acceleration = 1.5f;
+		particles[i].ttl = static_cast<float>(rand() % 100) / 50.0f;  
 		particles[i].inactive = false;
 	}
 	
@@ -90,7 +93,7 @@ void Application::Render(void)
 	rectangle.LoadPNG("images/rectangle.png", false);
 	circle.LoadPNG("images/circle.png", false);
 	triangle.LoadPNG("images/triangle.png", true);
-	fruits.LoadPNG("images/eraser.png", false); //CAMBIARLA
+	fruits.LoadPNG("images/kanye.png", true); //imagen para el load
 	increase.LoadPNG("images/increase.png", false);
 	decrease.LoadPNG("images/decrease.png", false);
 	fill.LoadPNG("images/fill.png", true);
@@ -190,6 +193,7 @@ void Application::Render(void)
 		framebuffer.DrawImage(fruits,img.x, img.y,fruits.height);
 	}
 	
+	//PARA PINTAR LA ANIMACION
 	if (animation) {
 		for (int i = 0; i < MAX_PARTICLES; ++i) {
 
@@ -198,9 +202,6 @@ void Application::Render(void)
 		}
 	}
 	
-
-
-
 	framebuffer.Render();
 	
 }
@@ -209,20 +210,18 @@ void Application::Render(void)
 void Application::Update(float seconds_elapsed)
 {
 	if (animation) {
-
+		//ACUTALIZAMOS LA POSICION Y VELOCIDAD DE LAS PARTICULAS
 		for (int i = 0; i < MAX_PARTICLES; ++i) {
 			if (!particles[i].inactive) {
 				particles[i].position.x += particles[i].velocity.x * seconds_elapsed;
 				particles[i].position.y += particles[i].velocity.y * seconds_elapsed;
 
-				// Update velocity or acceleration as needed
-				//particles[i].velocity.x += particles[i].acceleration * seconds_elapsed;
+		
+				particles[i].velocity.x += particles[i].acceleration * seconds_elapsed;
 
 				particles[i].ttl -= seconds_elapsed;
 
-				if (particles[i].position.x == 1279 || particles[i].position.x == 1 || particles[i].position.y == 699 || particles[i].position.y == 1) {
-					particles[i].inactive = true;
-				}
+				
 			}
 		}
 
@@ -453,6 +452,7 @@ void Application::OnMouseButtonDown(SDL_MouseButtonEvent event)
 				draw_circles = false;
 				paint_mode = false;
 				eraser_mode = false;
+				clicks = 0;
 			}
 			else {
 				load_button = false;
@@ -540,9 +540,14 @@ void Application::OnMouseButtonDown(SDL_MouseButtonEvent event)
 			first_click = true;
 		}
 		if (load_button) {
+			
 			start_x = mouse_position.x;
 			start_y = mouse_position.y;
-			loaded_images.push_back({ start_x,start_y });
+			//esto es para que no se ponga la imagen al apretar al boton
+			if (clicks != 0) {
+				loaded_images.push_back({ start_x,start_y });
+			}
+			clicks += 1;
 		}
 		if (eraser_mode) {
 			first_click = true;
@@ -555,7 +560,7 @@ void Application::OnMouseButtonDown(SDL_MouseButtonEvent event)
 void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 {
 	if (event.button == SDL_BUTTON_LEFT) {
-		//LÓGICA PARA CUANDO SE SUELTA EL CLICK, DEPENDIENDO DE QUÉ MODO ESTÉ ACTIVADO
+		//LÓGICA PARA CUANDO SE SUELTA EL CLICK, DEPENDIENDO DE QUÉ MODO ESTÉ ACTIVADO, METEMOS EN EL VECTOR LA FORMA CON LOS PARAMETROS ESCOGIDOS
 		if (draw_lines) {
 			if (first_click) {
 				end_x = mouse_position.x;
@@ -625,17 +630,4 @@ void Application::OnFileChanged(const char* filename)
 	Shader::ReloadSingleShader(filename);
 }
 
-void Application::InitParticles(float seconds_elapsed) {
-	
 
-	for (int i = 0; i < MAX_PARTICLES; ++i) {
-		particles[i].position.x = static_cast<float>(rand() % 800);  // Assuming a 800x600 framebuffer
-		particles[i].position.y = static_cast<float>(rand() % 600);
-		particles[i].velocity.x = static_cast<float>(rand() % 100) / 100.0f - 0.5f;  // Random normalized velocity
-		particles[i].velocity.y = static_cast<float>(rand() % 100) / 100.0f - 0.5f;
-		particles[i].color = Color::BLACK;  // White color
-		particles[i].acceleration = 0.1f;
-		particles[i].ttl = static_cast<float>(rand() % 100) / 50.0f;  // Random time to live
-		particles[i].inactive = false;
-	}
-}

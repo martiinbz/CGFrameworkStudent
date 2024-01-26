@@ -21,6 +21,7 @@ Button::Button(const Image& img, const Vector2& pos) {
         return mousePosition.x >= position.x && mousePosition.x < position.x + image.width &&
             mousePosition.y >= position.y && mousePosition.y < position.y + image.height;
     }
+
     Image Button::GetImage() {
         return image;
 

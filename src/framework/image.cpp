@@ -416,7 +416,7 @@ void Image::DrawLineDDA(int x0, int y0, int x1, int y1, const Color& c)
 		int rounded_x = static_cast<int>(x + 0.5f);
 		int rounded_y = static_cast<int>(y + 0.5f);
 
-		// Color
+		//pintamos el pixel
 		SetPixel(rounded_x, rounded_y, c);
 
 		// Pasamos al siguiente pixel
@@ -430,7 +430,7 @@ void Image::DrawRect(int x, int y, int w, int h, const Color& borderColor, int b
 {
 	if (isFilled)
 	{
-		// Draw filled rectangle
+		//bucle para ir dibujando el interior del rectangulo
 		for (int i = x; i < x + w; ++i)
 		{
 			for (int j = y; j < y + h; ++j)
@@ -440,12 +440,12 @@ void Image::DrawRect(int x, int y, int w, int h, const Color& borderColor, int b
 		}
 	}
 
-	// Draw border
+	// bucle para dibujar los bordes
 	for (int i = x; i < x + w; ++i)
 	{
 		for (int j = y; j < y + h; ++j)
 		{
-			// Check if the pixel is on the border
+			// para ajustar la anchura
 			if (i < x + borderWidth || i >= x + w - borderWidth ||
 				j < y + borderWidth || j >= y + h - borderWidth)
 			{
@@ -463,7 +463,7 @@ void Image::DrawCircle(int x, int y, int r, const Color& borderColor, int border
 
     while (cx >= cy)
     {
-        // Draw the eight octants
+        // Dibujamos los 8 octantes
         SetPixel(x + cx, y + cy, borderColor);
         SetPixel(x - cx, y + cy, borderColor);
         SetPixel(x + cx, y - cy, borderColor);
@@ -472,11 +472,9 @@ void Image::DrawCircle(int x, int y, int r, const Color& borderColor, int border
         SetPixel(x - cy, y + cx, borderColor);
         SetPixel(x + cy, y - cx, borderColor);
         SetPixel(x - cy, y - cx, borderColor);
-
-        // Update the current y value
         cy++;
 
-        // Check for decision parameter and update accordingly
+        //esto hará que se "redondeen" los bordes, sino saldria un cuadrado
         if (radiusError < 0)
             radiusError += 2 * cy + 1;
         else
@@ -486,7 +484,7 @@ void Image::DrawCircle(int x, int y, int r, const Color& borderColor, int border
         }
     }
 
-    // If the circle is filled, fill it using scanlines
+    //rellenamos usando scanlines
     if (isFilled)
 	{
     	for (int i = x - r ; i <= x + r ; ++i)
@@ -504,25 +502,25 @@ void Image::DrawCircle(int x, int y, int r, const Color& borderColor, int border
 }
 void Image::ScanLineDDA(int x0, int y0, int x1, int y1, int& minX, int& maxX)
 {
-	// Check if the line is horizontal
+	//mira si es horizontal
 	if (y0 == y1)
 		return;
 
-	// Swap points if needed to make sure y0 <= y1
+	// nos aseguramos que y0 <= y1
 	if (y0 > y1)
 	{
 		std::swap(x0, x1);
 		std::swap(y0, y1);
 	}
 
-	// Calculate slope and ensure it's not infinity
+	// calculamos el pendiente
 	float slope = (x1 - x0) / static_cast<float>(y1 - y0);
 
-	// Update minX and maxX for the first point
+	// primer punto
 	minX = static_cast<int>(x0 + 0.5f);
 	maxX = static_cast<int>(x0 + 0.5f);
 
-	// Iterate through the line and update minX and maxX
+	// ir actualizando minimo y maximo
 	for (int y = y0 + 1; y <= y1; ++y)
 	{
 		float x = x0 + slope * (y - y0) + 0.5f;
@@ -539,44 +537,43 @@ void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2
 {
 	int minX, maxX;
 
-	// Draw the border of the triangle
+	// Dibujamos los bordes( 3 lineas)
 	DrawLineDDA(p0.x, p0.y, p1.x, p1.y, borderColor);
 	DrawLineDDA(p1.x, p1.y, p2.x, p2.y, borderColor);
 	DrawLineDDA(p2.x, p2.y, p0.x, p0.y, borderColor);
 
-	// Fill the triangle
+	// Rellenamos el triangulo
 	if (isFilled)
-	{
+	{   //pintamos p0p1
 		for (int y = static_cast<int>(p0.y) + 1; y < static_cast<int>(p1.y); ++y)
 		{
-			// Initialize minX and maxX for each scanline
+			//x minima y maxima de p.1
 			ScanLineDDA(p0.x, p0.y, p1.x, p1.y, minX, maxX);
 
-			// Draw the horizontal line
+			// Dibujamos esa linea
 			for (int x = minX; x < maxX; ++x)
 			{
 				SetPixel(x, y, fillColor);
 			}
 		}
-
+		//lo mismo con p1p2
 		for (int y = static_cast<int>(p1.y) + 1; y < static_cast<int>(p2.y); ++y)
 		{
-			// Initialize minX and maxX for each scanline
+			
 			ScanLineDDA(p1.x, p1.y, p2.x, p2.y, minX, maxX);
 
-			// Draw the horizontal line
 			for (int x = minX; x < maxX; ++x)
 			{
 				SetPixel(x, y, fillColor);
 			}
 		}
-
+		//lo mismo con p2p0
 		for (int y = static_cast<int>(p2.y) + 1; y < static_cast<int>(p0.y); ++y)
 		{
-			// Initialize minX and maxX for each scanline
+			
 			ScanLineDDA(p2.x, p2.y, p0.x, p0.y, minX, maxX);
 
-			// Draw the horizontal line
+			
 			for (int x = minX; x < maxX; ++x)
 			{
 				SetPixel(x, y, fillColor);
@@ -593,22 +590,22 @@ void Image::DrawImage(const Image& image, int x, int y, bool top)
 		return;
 	}
 
-	// Determine the starting row based on the top parameter
+	
 	int startY = top ? y : y - image.height + 1;
 
-	// Iterate through the image pixels and draw to the framebuffer
+	// Vamos dibujando todos los pixeles de la imagen
 	for (int i = 0; i < image.width; ++i)
 	{
 		for (int j = 0; j < image.height; ++j)
 		{
-			// Calculate the position in the framebuffer
+			
 			int posX = x + i;
 			int posY = startY + j;
 
-			// Check if the position is within the framebuffer bounds
+			//ver si el pixel está dentro de la pantalla
 			if (posX >= 0 && posX < width && posY >= 0 && posY < height)
 			{
-				// Draw the pixel from the image to the framebuffer
+				
 				SetPixel(posX, posY, image.GetPixel(i, j));
 			}
 		}
