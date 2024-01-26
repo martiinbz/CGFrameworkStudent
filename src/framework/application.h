@@ -15,78 +15,9 @@ class Application
 {
 
 private:
-	//ESTRUCTURAS DE LOS DIFERENTES VECTORES USADOS PARA ALMACENAR FORMAS
-	struct Line
-	{
-		int start_x;
-		int start_y;
-		int end_x;
-		int end_y;
-		Color color;
-	};
-	struct Rectangle
-	{
-		int start_x;
-		int start_y;
-		int width;
-		int height;
-		Color color;
-		bool fill;
-		int border_width;
-	};
-	struct Circle
-	{
-		int start_x;
-		int start_y;
-		int radius;
-		Color color;
-		bool fill;
-	};
-	struct Triangle {
-		Vector2 v1;
-		Vector2 v2;
-		Vector2 v3;
-		Color color;
-		bool fill;
-	};
-	struct Pixel {
-		int x;
-		int y;
-		Color color;
-	};
-	struct Loaded_image {
-		int x;
-		int y;
-	};
 	
 
-	struct Particle {
-		Vector2 position;
-		Vector2 velocity;
-		Color color;
-		float acceleration;
-		float ttl;
-		bool inactive;
-	};
-
-	//DECLARAMOS TODAS LAS VARIABLES QUE USAREMOS
-	static const int MAX_PARTICLES = 100;
-	Particle particles[MAX_PARTICLES];
-	bool first_click, draw_lines, draw_rectangles, draw_circles, draw_triangles, paint_mode, animation, fill_shapes, increase_border_width, decrease_border_width, load_button, eraser_mode;
-	int start_x, start_y;
-	int end_x, end_y;
-	int height, width;
-	int draw_width, clicks;
-	Vector2 v1, v2, v3;
-	Color current_color;
-	Image load, save, paint, black, red, green, blue, yellow, pink, cyan, white, eraser, line, rectangle, circle, triangle, fruits, increase, decrease, fill;
-	Button loadbutton, savebutton, paintbutton, blackbutton, redbutton, greenbutton, bluebutton, yellowbutton, pinkbutton, cyanbutton, whitebutton, eraserbutton, linebutton, rectanglebutton, circlebutton, trianglebutton, increasebutton, decreasebutton, fillbutton;
-	std::vector<Line> lines;
-	std::vector<Rectangle> rectangles;
-	std::vector<Circle> circles;
-	std::vector<Triangle> triangles;
-	std::vector<Pixel> pixels;
-	std::vector<Loaded_image> loaded_images;
+	
 	
 public:
 
