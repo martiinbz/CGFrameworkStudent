@@ -8,6 +8,7 @@
 #include "framework.h"
 #include "button.h"
 #include "image.h"
+#include "entity.h"
 
 
 
@@ -15,7 +16,12 @@ class Application
 {
 
 private:
+	Mesh mesh;  // Load your mesh using LoadOBJ
+	Matrix44 modelMatrix;
+	Entity entity1;
+	Camera camera;
 	
+
 
 	
 	

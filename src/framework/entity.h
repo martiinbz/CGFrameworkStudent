@@ -12,8 +12,8 @@ private:
 
 
 public: 
-	void entity();
-	void entity(Mesh mesh, Matrix44 matrix);
+	Entity();
+	Entity(Mesh mesh, Matrix44 matrix);
 	void Render(Image* framebuffer, Camera* camera, const Color& c);
 
 

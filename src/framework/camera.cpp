@@ -1,4 +1,5 @@
 #include "camera.h"
+#include "image.h"
 
 #include "main/includes.h"
 #include <iostream>
