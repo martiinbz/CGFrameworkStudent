@@ -16,9 +16,9 @@ class Application
 {
 
 private:
-	Mesh mesh;  // Load your mesh using LoadOBJ
+	Mesh mesh;  
 	Matrix44 modelMatrix;
-	Entity entity1;
+	Entity entity;
 	Camera camera;
 	
 

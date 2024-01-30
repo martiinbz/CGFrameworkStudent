@@ -23,10 +23,12 @@ Application::Application(const char* caption, int width, int height)
 
     this->framebuffer.Resize(w, h);
 
-    // Initialize your entities and camera here
-    // Example: 
-	// En tu aplicación donde creas una instancia de Entity
-	 // Crear una instancia de Entity con la matriz modelo inicial
+    camera = Camera();
+    mesh.LoadOBJ("/meshes/lee.obj");
+    modelMatrix.SetIdentity();
+    entity = Entity(mesh, modelMatrix);
+    //camera.UpdateViewMatrix();
+    //camera.UpdateProjectionMatrix();
    
 	
 	
@@ -43,20 +45,15 @@ void Application::Init(void)
 
 }
 
-// Render one frame
+
 void Application::Render(void)
 {
 	// ...
-    Entity entity;
+ 
     
-    framebuffer.Fill(Color::BLACK);
-    camera.UpdateViewMatrix();
-
-    // Update the projection matrix
-    camera.UpdateProjectionMatrix();
-
-    // Render the entity using the updated matrices
-    entity1.Render(&framebuffer, &camera, Color(255, 255, 255));
+    
+   
+    entity.Render(&framebuffer, &camera, Color(255, 255, 255));
     framebuffer.Render();
 		
 	
@@ -65,7 +62,7 @@ void Application::Render(void)
 // Called after render
 void Application::Update(float seconds_elapsed)
 {
-	
+   
 	
 }
 
