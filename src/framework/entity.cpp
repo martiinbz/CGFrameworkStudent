@@ -49,11 +49,11 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
         int screenWidth = framebuffer->width;
         int screenHeight = framebuffer->height;
 
-        Vector2 screenSpaceV0 = Vector2(((clipSpaceV0.x+1.00f)/2.00f*screenWidth),clipSpaceV0.y*(screenWidth)-1.00f);
+        Vector2 screenSpaceV0 = Vector2(((clipSpaceV0.x+1.00f)*screenWidth),clipSpaceV0.y*(screenHeight));
 
-        Vector2 screenSpaceV1 = Vector2((clipSpaceV1.x+1.00f)/2.00f * screenWidth , clipSpaceV1.y * (screenWidth)-1.00f);
+        Vector2 screenSpaceV1 = Vector2((clipSpaceV1.x+1.00f)* screenWidth , clipSpaceV1.y * (screenHeight));
 
-        Vector2 screenSpaceV2 = Vector2((clipSpaceV2.x+1.00f)/2.00f * screenWidth , clipSpaceV2.y* (screenWidth)-1.00f);
+        Vector2 screenSpaceV2 = Vector2((clipSpaceV2.x+1.00f) * screenWidth , clipSpaceV2.y* (screenHeight));
         
 
         //vamos dibujando los triangulos ppor pantalla

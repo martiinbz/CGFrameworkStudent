@@ -49,10 +49,7 @@ void Application::Init(void)
 void Application::Render(void)
 {
 	// ...
- 
-    
-    
-   
+
     entity.Render(&framebuffer, &camera, Color(255, 255, 255));
     framebuffer.Render();
 		
