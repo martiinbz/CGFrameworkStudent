@@ -3,6 +3,7 @@
 
 #include "main/includes.h"
 #include <iostream>
+#include <math.h>
 
 Camera::Camera()
 {
@@ -88,17 +89,26 @@ void Camera::UpdateViewMatrix()
 	view_matrix.SetIdentity();
 
 	// Comment this line to create your own projection matrix!
-	SetExampleViewMatrix();
+	//SetExampleViewMatrix();
 
 	// Remember how to fill a Matrix4x4 (check framework slides)
 	// Careful with the order of matrix multiplications, and be sure to use normalized vectors!
 	
 	// Create the view matrix rotation
 	// ...
+	Matrix44 rotationMatrix;
+	rotationMatrix.Rotate(DEG2RAD*rotation[0], { 1, 0, 0 });
+	rotationMatrix.Rotate(DEG2RAD*rotation[1], { 0, 1, 0 });
+	rotationMatrix.Rotate(DEG2RAD*rotation[2], { 0, 0, 1 });
+	
+
+		
+		
 	// view_matrix.M[3][3] = 1.0;
 
 	// Translate view matrix
-	// ...
+	view_matrix = rotationMatrix;
+	view_matrix.TranslateLocal(-position[0], -position[1], -position[2]);
 
 	UpdateViewProjectionMatrix();
 }
@@ -110,16 +120,33 @@ void Camera::UpdateProjectionMatrix()
 	projection_matrix.SetIdentity();
 
 	// Comment this line to create your own projection matrix!
-	SetExampleProjectionMatrix();
+	//SetExampleProjectionMatrix();
 
 	// Remember how to fill a Matrix4x4 (check framework slides)
 	
 	if (type == PERSPECTIVE) {
+
+		double f = (1 / (tan((DEG2RAD * (fov / 2)))));
 		// projection_matrix.M[2][3] = -1;
 		// ...
+		projection_matrix.M[0][0] = (f / aspect);
+		projection_matrix.M[1][1] = f;
+		projection_matrix.M[2][2] = ((far_plane+near_plane)/(near_plane-far_plane));
+		projection_matrix.M[3][2] = 2 * ((far_plane + near_plane) / (near_plane - far_plane));
+		projection_matrix.M[2][3] = -1.0f;
+		
+		
 	}
 	else if (type == ORTHOGRAPHIC) {
 		// ...
+		projection_matrix.M[0][0] = 2 / (right - left);
+		projection_matrix.M[1][1] = 2 / (top - bottom);
+		projection_matrix.M[2][2] = -2 / (far_plane - near_plane);
+		projection_matrix.M[3][3] = 1;
+		projection_matrix.M[0][3] = -((right + left) / (right - left));
+		projection_matrix.M[1][3] = -((top + bottom) / (top - bottom));
+		projection_matrix.M[2][3] = -((far_plane + near_plane) / (far_plane - near_plane));
+
 	} 
 
 	UpdateViewProjectionMatrix();

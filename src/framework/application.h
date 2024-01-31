@@ -19,7 +19,7 @@ private:
 	Mesh mesh;  
 	Matrix44 modelMatrix;
 	Entity entity;
-	Camera camera;
+	Camera camera1;
 	
 
 

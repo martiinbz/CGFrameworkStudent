@@ -38,6 +38,8 @@ public:
 	Matrix44 view_matrix;
 	Matrix44 projection_matrix;
 	Matrix44 viewprojection_matrix;
+	float position[3];
+	float rotation[3];
 
 	Camera();
 

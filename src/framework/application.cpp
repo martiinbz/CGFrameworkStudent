@@ -23,14 +23,15 @@ Application::Application(const char* caption, int width, int height)
 
     this->framebuffer.Resize(w, h);
 
-    camera = Camera();
-    mesh.LoadOBJ("/meshes/anna.obj");
+    
+    mesh.LoadOBJ("/meshes/lee.obj");
     modelMatrix.SetIdentity();
     entity = Entity(mesh, modelMatrix);
-    //camera.UpdateViewMatrix();
-    //camera.UpdateProjectionMatrix();
-   //camera.SetPerspective(60.00, framebuffer.width / framebuffer.height, 200.0, 500);
-    //camera.LookAt(0, 0, 0);
+    
+    
+   // camera1.SetPerspective(45, w/h, 0.01, 100);
+    //camera1.LookAt((0,0,0),(0,0,1),Vector3::UP);
+   // camera1.Move((0, 0, 1));
    
 	
 	
@@ -51,8 +52,8 @@ void Application::Init(void)
 void Application::Render(void)
 {
 	// ...
-
-    entity.Render(&framebuffer, &camera, Color(255, 255, 255));
+   
+    entity.Render(&framebuffer, &camera1, Color(255, 255, 255));
     framebuffer.Render();
 		
 	
