@@ -24,11 +24,13 @@ Application::Application(const char* caption, int width, int height)
     this->framebuffer.Resize(w, h);
 
     camera = Camera();
-    mesh.LoadOBJ("/meshes/lee.obj");
+    mesh.LoadOBJ("/meshes/anna.obj");
     modelMatrix.SetIdentity();
     entity = Entity(mesh, modelMatrix);
     //camera.UpdateViewMatrix();
     //camera.UpdateProjectionMatrix();
+   //camera.SetPerspective(60.00, framebuffer.width / framebuffer.height, 200.0, 500);
+    //camera.LookAt(0, 0, 0);
    
 	
 	

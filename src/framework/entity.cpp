@@ -49,12 +49,17 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
         int screenWidth = framebuffer->width;
         int screenHeight = framebuffer->height;
 
-        Vector2 screenSpaceV0 = Vector2(((clipSpaceV0.x+1.00f)*screenWidth),clipSpaceV0.y*(screenHeight));
+        /*Vector2 screenSpaceV0 = Vector2(((clipSpaceV0.x + 1.00f) * screenWidth), clipSpaceV0.y * (screenHeight));
 
         Vector2 screenSpaceV1 = Vector2((clipSpaceV1.x+1.00f)* screenWidth , clipSpaceV1.y * (screenHeight));
 
-        Vector2 screenSpaceV2 = Vector2((clipSpaceV2.x+1.00f) * screenWidth , clipSpaceV2.y* (screenHeight));
+        Vector2 screenSpaceV2 = Vector2((clipSpaceV2.x+1.00f) * screenWidth , clipSpaceV2.y* (screenHeight));*/
         
+        Vector2 screenSpaceV0 = Vector2(((clipSpaceV0.x + 1.00f) * screenWidth), ( clipSpaceV0.y) * (screenHeight));
+
+        Vector2 screenSpaceV1 = Vector2(((clipSpaceV1.x + 1.00f) * screenWidth), (clipSpaceV1.y) * (screenHeight));
+
+        Vector2 screenSpaceV2 = Vector2(((clipSpaceV2.x + 1.00f) * screenWidth), (clipSpaceV2.y) * (screenHeight)); 
 
         //vamos dibujando los triangulos ppor pantalla
         
@@ -66,10 +71,10 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
         framebuffer->SetPixel(screenSpaceV2.x, screenSpaceV2.y, c); */
         
 
-        std::cout << "PRIMER VECTOR x " << screenSpaceV0.x << std::endl;
+       /* std::cout << "PRIMER VECTOR x " << screenSpaceV0.x << std::endl;
         std::cout << "Segundo VECTOR y " << screenSpaceV0.y << std::endl;
         std::cout << "Segundo VECTOR x " << screenSpaceV1.x << std::endl;
         std::cout << "Tercer VECTOR x " << screenSpaceV2.x << std::endl;
-        std::cout << "Terccer VECTOR y " << screenSpaceV1.y << std::endl;
+        std::cout << "Terccer VECTOR y " << screenSpaceV1.y << std::endl;*/
     }
 }
