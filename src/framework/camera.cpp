@@ -108,7 +108,7 @@ void Camera::UpdateViewMatrix()
 
 	// Translate view matrix
 	view_matrix = rotationMatrix;
-	view_matrix.TranslateLocal(-position[0], -position[1], -position[2]);
+	view_matrix.TranslateLocal(-position[0], -position[1], -position[2]); 
 
 	UpdateViewProjectionMatrix();
 }
@@ -125,15 +125,23 @@ void Camera::UpdateProjectionMatrix()
 	// Remember how to fill a Matrix4x4 (check framework slides)
 	
 	if (type == PERSPECTIVE) {
-
-		double f = (1 / (tan((DEG2RAD * (fov / 2)))));
+		
+		
+		float f = (1 / (tan((DEG2RAD *fov)*0.5f)));
 		// projection_matrix.M[2][3] = -1;
 		// ...
-		projection_matrix.M[0][0] = (f / aspect);
+		
+		projection_matrix.M[0][0] = f / aspect;
+		
 		projection_matrix.M[1][1] = f;
-		projection_matrix.M[2][2] = ((far_plane+near_plane)/(near_plane-far_plane));
-		projection_matrix.M[3][2] = 2 * ((far_plane + near_plane) / (near_plane - far_plane));
-		projection_matrix.M[2][3] = -1.0f;
+		
+		projection_matrix.M[2][2] = (far_plane+near_plane)/(near_plane-far_plane);
+		projection_matrix.M[2][3] = -1.00f;
+		
+		projection_matrix.M[3][2] = 2.00f * ((far_plane * near_plane) / (near_plane - far_plane));
+		
+		
+		
 		
 		
 	}

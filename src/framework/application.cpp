@@ -23,14 +23,18 @@ Application::Application(const char* caption, int width, int height)
 
     this->framebuffer.Resize(w, h);
 
-    
-    mesh.LoadOBJ("/meshes/lee.obj");
+    Vector3 t1 = Vector3(0, 0, 2);
+    mesh.LoadOBJ("/meshes/anna.obj");
+    mesh2.LoadOBJ("/meshes/lee.obj");
     modelMatrix.SetIdentity();
     entity = Entity(mesh, modelMatrix);
+    entity2 = Entity(mesh2, modelMatrix);
     
     
-   // camera1.SetPerspective(45, w/h, 0.01, 100);
-    //camera1.LookAt((0,0,0),(0,0,1),Vector3::UP);
+    //camera1.Rotate(DEG2RAD * 5, Vector3(0, 1, 0));
+   camera1.SetPerspective(45, w/h, 0.1, 100);
+   //camera1.SetOrthographic(1, 0, 0, 1, 0.01, 100);
+  //camera1.LookAt(Vector3(1,0,0),Vector3(0,0,1),Vector3::UP);
    // camera1.Move((0, 0, 1));
    
 	
@@ -52,7 +56,7 @@ void Application::Init(void)
 void Application::Render(void)
 {
 	// ...
-   
+    entity2.Render(&framebuffer, &camera1, Color(255, 0, 0));
     entity.Render(&framebuffer, &camera1, Color(255, 255, 255));
     framebuffer.Render();
 		

@@ -16,9 +16,11 @@ class Application
 {
 
 private:
-	Mesh mesh;  
+	Mesh mesh; 
+	Mesh mesh2;
 	Matrix44 modelMatrix;
 	Entity entity;
+	Entity entity2;
 	Camera camera1;
 	
 
