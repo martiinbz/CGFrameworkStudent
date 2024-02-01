@@ -272,6 +272,9 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 void Application::OnWheel(SDL_MouseWheelEvent event)
 {
 	float dy = event.preciseY;
+    
+
+    current_far += dy*20;
 
 	// ...
 }
