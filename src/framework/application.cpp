@@ -100,6 +100,7 @@ void Application::Render(void)
         camera1.SetPerspective(DEG2RAD*current_fov, w/h, current_near,current_far);
 
     }
+   
     
 
    
@@ -162,9 +163,11 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
         // Set camera to perspective mode
         if(!perspective){
             perspective = true;
+            ortographic = false;
         }
         else{
             perspective = false;
+
         }
         break;
     case SDLK_n: // "N" key, set current property to CAMERA NEAR
@@ -263,7 +266,8 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
 	if (event.button == SDL_BUTTON_LEFT) {
 
        // camera1.Move(Vector3(mouse_position.x - start_x, mouse_position.y - start_y, 0));
-
+       camera1.Rotate(0.1*mouse_delta.x*DEG2RAD,Vector3(0,1,0));
+       camera1.Rotate(0.1*mouse_delta.y*DEG2RAD,Vector3(1,0,0));
 	
 		
 	}
