@@ -16,13 +16,15 @@ class Application
 {
 
 private:
+	int w, h;
+	int start_x, start_y, start_z, end_x, end_y, end_z, current_fov, current_near, current_far;
 	Mesh mesh; 
-	Mesh mesh2;
-	Matrix44 modelMatrix;
+	Mesh mesh2, mesh3;
+	Matrix44 modelMatrix, modelMatrix2, modelMatrix3, rotationmatrix, translationmatrix, rotationmatrix2, translationmatrix2, rotationmatrix3, translationmatrix3, rotationmatrix4, translationmatrix4;
 	Entity entity;
-	Entity entity2;
+	Entity entity2, entity3, entity4;
 	Camera camera1;
-	
+	bool draw_entity, animation, ortographic, perspective, change_near, change_far, change_fov, increase, decrease;
 
 
 	

@@ -8,13 +8,16 @@ class Entity {
 
 private:
 	Mesh mesh;
-	Matrix44 matrix;
+	Matrix44 modelmatrix;
+	Matrix44 rotationmatrix;
+	Matrix44 translationmatrix;
 
 
 public: 
 	Entity();
-	Entity(Mesh mesh, Matrix44 matrix);
+	Entity(Mesh& mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix);
 	void Render(Image* framebuffer, Camera* camera, const Color& c);
+	void Entity::Update(float seconds_elapsed);
 
 
 

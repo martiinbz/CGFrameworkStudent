@@ -96,19 +96,39 @@ void Camera::UpdateViewMatrix()
 	
 	// Create the view matrix rotation
 	// ...
-	Matrix44 rotationMatrix;
-	rotationMatrix.Rotate(DEG2RAD*rotation[0], { 1, 0, 0 });
-	rotationMatrix.Rotate(DEG2RAD*rotation[1], { 0, 1, 0 });
-	rotationMatrix.Rotate(DEG2RAD*rotation[2], { 0, 0, 1 });
 	
+	
+	
+
+	Vector3 side, forward, top;
+
+	forward = eye - center;
+	forward.Normalize();
+	side = forward.Cross(up);
+	side.Normalize();
+	top = side.Cross(forward);
+
+	view_matrix.M[0][0] = side.x;
+	view_matrix.M[1][0] = side.y;
+	view_matrix.M[2][0] = side.z;
+	view_matrix.M[0][1] = top.x;
+	view_matrix.M[1][1] = top.y;
+	view_matrix.M[2][1] = top.z;
+	view_matrix.M[0][2] = -forward.x;
+	view_matrix.M[1][2] = -forward.y;
+	view_matrix.M[1][2] = -forward.z;
+	view_matrix.M[3][3] = 1;
+
+
+
+		
 
 		
 		
 	// view_matrix.M[3][3] = 1.0;
 
 	// Translate view matrix
-	view_matrix = rotationMatrix;
-	view_matrix.TranslateLocal(-position[0], -position[1], -position[2]); 
+	view_matrix.TranslateLocal(-position[0], -position[1], -position[2]);
 
 	UpdateViewProjectionMatrix();
 }

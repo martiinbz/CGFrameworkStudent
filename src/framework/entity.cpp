@@ -11,14 +11,15 @@
 Entity::Entity() {
 
 }
-Entity::Entity(Mesh mesh1, Matrix44 matrix1) {
+Entity::Entity(Mesh& mesh1, Matrix44& rotationmatrix,Matrix44& translationmatrix) {
 
 	mesh = mesh1;
-	matrix = matrix1;
+    modelmatrix = translationmatrix*rotationmatrix;
+   
 }
 
 void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
-    //obetenemos los vertices
+    //obtenemos los vertices
     const std::vector<Vector3>& meshVertices = mesh.GetVertices();
 
     //iteramos
@@ -29,9 +30,9 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
         Vector3 v2 = meshVertices[i + 2];
 
         //Transformamos a world space
-        v0 = matrix* v0;
-        v1 = matrix* v1;
-        v2 = matrix* v2;
+        v0 = modelmatrix* v0;
+        v1 = modelmatrix* v1;
+        v2 = modelmatrix* v2;
 
         // Proyectamos con la camara
         bool negZ0, negZ1, negZ2;
@@ -71,4 +72,9 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
         std::cout << "Tercer VECTOR x " << screenSpaceV2.x << std::endl;
         std::cout << "Terccer VECTOR y " << screenSpaceV1.y << std::endl;*/
     }
+}
+void Entity::Update(float seconds_elapsed) {
+      //translationmatrix.SetTranslation(0, 0, 0.04);
+    modelmatrix.Rotate((DEG2RAD * 45) * seconds_elapsed, { 0,1,0 });
+    
 }

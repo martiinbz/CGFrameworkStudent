@@ -417,7 +417,7 @@ void Image::DrawLineDDA(int x0, int y0, int x1, int y1, const Color& c)
 		int rounded_y = static_cast<int>(y + 0.5f);
 
 		//pintamos el pixel
-		SetPixel(rounded_x, rounded_y, c);
+		SetPixelSafe(rounded_x, rounded_y, c);
 
 		// Pasamos al siguiente pixel
 		x += x_increment;
