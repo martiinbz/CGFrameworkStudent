@@ -130,7 +130,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 
 
 	case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
-	case SDLK_1: // "1" key, draw single entity
+	case SDLK_1: // draw single entity
         if (!draw_entity) {
             draw_entity = true;
         }
@@ -138,8 +138,8 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
             draw_entity = false;
         }
         break;
-    case SDLK_2: // "2" key, draw multiple animated entities
-        // Set up or switch to drawing multiple animated entities
+    case SDLK_2: //  draw multiple animated entities
+       
         if(!animation){
             animation = true;
         }
@@ -147,7 +147,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
             animation = false;
         }
         break;
-    case SDLK_o: // "O" key, set orthographic camera mode
+    case SDLK_o: 
         // Set camera to orthographic mode
         if(!ortographic){
             ortographic = true;
@@ -159,7 +159,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
         }
         break;
         
-    case SDLK_p: // "P" key, set perspective camera mode
+    case SDLK_p: 
         // Set camera to perspective mode
         if(!perspective){
             perspective = true;
@@ -170,7 +170,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 
         }
         break;
-    case SDLK_n: // "N" key, set current property to CAMERA NEAR
+    case SDLK_n: 
         // Set the current property to camera near
         if (!change_near) {
             change_near = true;
@@ -182,7 +182,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
         }
         break;
     case SDLK_v: 
-        // Set the current property to camera near
+        // Set the current property to fov
         if (!change_fov) {
             change_fov = true;
             change_near = false;
@@ -194,7 +194,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
         }
         break;
         
-    case SDLK_f: // "F" key, set current property to CAMERA FAR
+    case SDLK_f: 
         // Set the current property to camera far
         if (!change_far) {
             change_far = true;
@@ -206,7 +206,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
         }
         break;
         
-    case SDLK_PLUS: // "+" key, increase current property
+    case SDLK_PLUS: //  increase current property
         if (change_fov) {
             current_fov += 90;
         }
@@ -218,7 +218,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
             current_far += 20;
         }
         break;
-    case SDLK_MINUS: // "-" key, decrease current property
+    case SDLK_MINUS: // , decrease current property
         if (change_fov) {
             current_fov -= 90;
         }
@@ -265,9 +265,9 @@ void Application::OnMouseMove(SDL_MouseButtonEvent event)
     // Additional mouse move events if needed
 	if (event.button == SDL_BUTTON_LEFT) {
 
-       // camera1.Move(Vector3(mouse_position.x - start_x, mouse_position.y - start_y, 0));
-       camera1.Rotate(0.1*mouse_delta.x*DEG2RAD,Vector3(0,1,0));
-       camera1.Rotate(0.1*mouse_delta.y*DEG2RAD,Vector3(1,0,0));
+       
+      // camera1.Rotate(0.1*mouse_delta.x*DEG2RAD,Vector3(0,1,0));
+      // camera1.Rotate(0.1*mouse_delta.y*DEG2RAD,Vector3(1,0,0));
 	
 		
 	}
