@@ -227,7 +227,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
            
         }
         else if (change_far) {
-            current_far -= 20;
+            current_far -= 200;
         }
         break;
         
@@ -241,11 +241,11 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 void Application::OnMouseButtonDown(SDL_MouseButtonEvent event)
 {
 	
-	if (event.button == SDL_BUTTON_LEFT) {
+	/*if (event.button == SDL_BUTTON_LEFT) {
         start_x = mouse_position.x;
         start_y = mouse_position.y;
 		
-	}
+	}*/
 }
 
 
@@ -259,30 +259,17 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
-	// Handle mouse motion event
-    // Use event.x and event.y for mouse coordinates
-
-    // Additional mouse move events if needed
-	if (event.button == SDL_BUTTON_LEFT) {
-
-       
-      // camera1.Rotate(0.1*mouse_delta.x*DEG2RAD,Vector3(0,1,0));
-      // camera1.Rotate(0.1*mouse_delta.y*DEG2RAD,Vector3(1,0,0));
-	
-		
-	}
+    if (event.button == SDL_BUTTON_LEFT) {
+        //camera1.Orbit(-mouse_delta.x * 0.01, Vector3::UP);
+      // camera1.Orbit(-mouse_delta.y * 0.01, Vector3::RIGHT);
+    }
 }
 
 void Application::OnWheel(SDL_MouseWheelEvent event)
 {
-	float dy = event.preciseY;
-    
-
-    current_far += dy*20;
-
-	// ...
+    float dy = event.preciseY;
+    //camera1.Zoom(dy < 0 ? 1.1 : 0.9);
 }
-
 void Application::OnFileChanged(const char* filename)
 { 
 	Shader::ReloadSingleShader(filename);

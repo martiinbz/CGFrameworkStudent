@@ -8,7 +8,7 @@
 Camera::Camera()
 {
 	view_matrix.SetIdentity();
-	SetOrthographic(-1,1,1,-1,-1,1);
+	SetOrthographic(-1,1,1,-1,-1,1000);
 }
 
 Vector3 Camera::GetLocalVector(const Vector3& v)
@@ -48,7 +48,7 @@ void Camera::Move(Vector3 delta)
 	UpdateViewMatrix();
 }
 
-void Camera::SetOrthographic(float left, float right, float top, float bottom, float near_plane, float far_plane)
+void Camera::SetOrthographic(float left, float right, float top, float bottom, float near_plane, float far_plan)
 {
 	type = ORTHOGRAPHIC;
 
@@ -57,7 +57,7 @@ void Camera::SetOrthographic(float left, float right, float top, float bottom, f
 	this->top = top;
 	this->bottom = bottom;
 	this->near_plane = near_plane;
-	this->far_plane = far_plane;
+	this->far_plane = far_plan;
 
 	UpdateProjectionMatrix();
 }
@@ -129,7 +129,7 @@ void Camera::UpdateViewMatrix()
 
 	// Translate view matrix
 	view_matrix.TranslateLocal(-position[0], -position[1], -position[2]);
-
+	
 	UpdateViewProjectionMatrix();
 }
 
@@ -176,7 +176,7 @@ void Camera::UpdateProjectionMatrix()
 		projection_matrix.M[2][3] = -((far_plane + near_plane) / (far_plane - near_plane));
 
 	} 
-
+	
 	UpdateViewProjectionMatrix();
 }
 
@@ -216,5 +216,20 @@ void Camera::SetExampleProjectionMatrix()
 
 	glGetFloatv(GL_PROJECTION_MATRIX, projection_matrix.m );
 	glMatrixMode(GL_MODELVIEW);
+}
+void Camera::Orbit(float angle, const Vector3& axis)
+{
+	Matrix44 R;
+	R.SetRotation(angle, axis);
+	Vector3 new_front = R * (eye - center);
+	eye = center + new_front;
+	UpdateViewMatrix();
+}
+
+void Camera::Zoom(float distance)
+{
+	Vector3 new_front = eye - center;
+	eye = center + new_front * distance;
+	UpdateViewMatrix();
 }
 

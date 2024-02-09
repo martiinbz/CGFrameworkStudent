@@ -611,6 +611,10 @@ void Image::DrawImage(const Image& image, int x, int y, bool top)
 		}
 	}
 }
+void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, const Color& c2) {
+	;
+}
+
 
 
 

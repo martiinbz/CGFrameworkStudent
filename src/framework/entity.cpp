@@ -35,7 +35,7 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
         v2 = modelmatrix* v2;
 
         // Proyectamos con la camara para ver si los puntos están dentro de su campo de vision
-        bool negZ0, negZ1, negZ2;
+        bool negZ0, negZ1, negZ2;   
         Vector3 clipSpaceV0 = camera->ProjectVector(v0, negZ0);
         Vector3 clipSpaceV1 = camera->ProjectVector(v1, negZ1);
         Vector3 clipSpaceV2 = camera->ProjectVector(v2, negZ2);
@@ -57,10 +57,11 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
 
         //vamos dibujando los triangulos ppor pantalla
         
-        framebuffer->DrawLineDDA(screenSpaceV0.x, screenSpaceV0.y, screenSpaceV1.x, screenSpaceV1.y, c);
+        /*framebuffer->DrawLineDDA(screenSpaceV0.x, screenSpaceV0.y, screenSpaceV1.x, screenSpaceV1.y, c);
         framebuffer->DrawLineDDA(screenSpaceV1.x, screenSpaceV1.y, screenSpaceV2.x, screenSpaceV2.y, c);
-        framebuffer->DrawLineDDA(screenSpaceV2.x, screenSpaceV2.y, screenSpaceV0.x, screenSpaceV0.y, c);
+        framebuffer->DrawLineDDA(screenSpaceV2.x, screenSpaceV2.y, screenSpaceV0.x, screenSpaceV0.y, c); */
         
+        framebuffer->DrawTriangle(screenSpaceV0, screenSpaceV1, screenSpaceV2, Color(255, 255, 255), true, Color(255, 255, 255));
         
 
        
@@ -76,3 +77,12 @@ void Entity::Update(float seconds_elapsed) {
     modelmatrix.Rotate((DEG2RAD * 45) * seconds_elapsed, { 0,1,0 });
     
 }
+enum class eRenderMode {
+    POINTCLOUD,
+    WIREFRAME,
+    TRIANGLES,
+    TRIANGLES_INTERPOLATED
+};
+eRenderMode mode;
+
+
