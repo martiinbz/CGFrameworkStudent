@@ -507,14 +507,14 @@ void Image::ScanLineDDA(int x0, int y0, int x1, int y1, std::vector<Cell>& table
 
 	float dx = x1 - x0;
 	float dy = y1 - y0;
-
-	float d = std::max(dx, dy);
+	
+	float d = std::max(abs(dx), abs(dy));
 	Vector2 v = Vector2(dx / d, dy / d);
 	float x = x0, y = y0;
 
-	for (int i = 0; i < d; i++) {
-		//Update the table only if the calculated x and y coordinates are within the range of the image
-		if (y >= 0 && y < height) {
+	for (float i = 0; i <= d; i++) {
+		//Update the table only if the calculated y coordinates are within the range of the image
+		if (y >= 0 && y < table.size()) {
 			table[floor(y)].minx = std::min(floor(x), table[floor(y)].minx);
 			table[floor(y)].maxx = std::max(floor(x), table[floor(y)].maxx);
 		}
@@ -522,6 +522,7 @@ void Image::ScanLineDDA(int x0, int y0, int x1, int y1, std::vector<Cell>& table
 		y += v.y;
 	}
 }
+
 void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& borderColor, bool isFilled, const Color& fillColor) {
 
 	if (isFilled) {
@@ -529,13 +530,13 @@ void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2
 		std::vector<Cell> table(height);
 		//Update table with the min and max x values of the triangle
 		ScanLineDDA(p0.x, p0.y, p1.x, p1.y, table);
-		ScanLineDDA(p0.x, p0.y, p2.x, p2.y, table);
 		ScanLineDDA(p1.x, p1.y, p2.x, p2.y, table);
+		ScanLineDDA(p0.x, p0.y, p2.x, p2.y, table);
 		//Paint the triangle
 		for (int i = 0; i < table.size(); i++) {
 			//Paint each row of the triangle from minx to maxx (included)
 			for (int j = table[i].minx; j <= table[i].maxx; j++) {
-				SetPixel(j, i, fillColor);
+				SetPixelSafe(j, i, fillColor);
 			}
 		}
 	}

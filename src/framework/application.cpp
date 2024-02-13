@@ -101,7 +101,7 @@ void Application::Render(void)
 
     }
    
-   // framebuffer.DrawTriangle(Vector2(100,200),Vector2(200,400),Vector2(600,200), Color::WHITE, true, Color::RED);
+    framebuffer.DrawTriangle(Vector2(100,200),Vector2(200,400),Vector2(600,200), Color::WHITE, true, Color::RED);
 
    
     framebuffer.Render();

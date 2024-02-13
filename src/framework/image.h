@@ -10,6 +10,7 @@
 #include <iostream>
 #include "framework.h"
 
+
 //remove unsafe warnings
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -31,11 +32,15 @@ class Image
 		unsigned char* data; // Bytes with the pixel information
 	} TGAInfo;
 	struct Cell {
-		float minx;
-		float maxx;
+		float minx=2000;
+		float maxx=1;
+		
 	};
 	std::vector<Cell> table;
+	
+	
 public:
+	
 	unsigned int width;
 	unsigned int height;
 	unsigned int bytes_per_pixel = 3; // Bits per pixel
@@ -106,7 +111,7 @@ public:
 	void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& borderColor, bool isFilled, const Color& fillColor);
 	void Image::DrawImage(const Image& image, int x, int y, bool top);
 	void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, const Color& c2);
-
+	
 };
 
 // Image storing one float per pixel instead of a 3 or 4 component Color
