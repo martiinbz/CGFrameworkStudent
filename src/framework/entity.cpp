@@ -60,9 +60,11 @@ void Entity::Render(Image* framebuffer, Camera* camera, const Color& c) {
         /*framebuffer->DrawLineDDA(screenSpaceV0.x, screenSpaceV0.y, screenSpaceV1.x, screenSpaceV1.y, c);
         framebuffer->DrawLineDDA(screenSpaceV1.x, screenSpaceV1.y, screenSpaceV2.x, screenSpaceV2.y, c);
         framebuffer->DrawLineDDA(screenSpaceV2.x, screenSpaceV2.y, screenSpaceV0.x, screenSpaceV0.y, c); */
-        
-        framebuffer->DrawTriangle(screenSpaceV0, screenSpaceV1, screenSpaceV2, Color(255, 255, 255), true, Color(255, 255, 255));
-        
+        Vector3 vv0 = (screenSpaceV0.x, screenSpaceV0.y, 1);
+        Vector3 vv1 = (screenSpaceV1.x, screenSpaceV1.y, 1);
+        Vector3 vv2 = (screenSpaceV2.x, screenSpaceV2.y, 1);
+       //framebuffer->DrawTriangle(screenSpaceV0, screenSpaceV1, screenSpaceV2, c, false, c);
+       framebuffer->DrawTriangleInterpolated(vv0,vv1,vv2, Color::RED,Color::GREEN,Color::BLUE);
 
        
         /*

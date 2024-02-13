@@ -578,8 +578,57 @@ void Image::DrawImage(const Image& image, int x, int y, bool top)
 	}
 }
 void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, const Color& c2) {
-	;
+	std::vector<Cell> table(height);
+	Matrix44 m;
+	
+
+	
+
+	
+	//Update table with the min and max x values of the triangle
+	ScanLineDDA(p0.x, p0.y, p1.x, p1.y, table);
+	ScanLineDDA(p1.x, p1.y, p2.x, p2.y, table);
+	ScanLineDDA(p0.x, p0.y, p2.x, p2.y, table);
+
+	m.M[0][0] = p0.x;
+	m.M[0][1] = p1.x;
+	m.M[0][2] = p2.x;
+	m.M[1][0] = p0.y;
+	m.M[1][1] = p1.y;
+	m.M[1][2] = p2.y;
+	m.M[2][0] = 1;
+	m.M[2][1] = 1;
+	m.M[2][2] = 1;
+	m.Inverse();
+	float detT = p0.x * (p1.y - p2.y) - p1.x * (p0.y - p2.y) + p2.x * (p0.y - p1.y);
+	
+	
+
+	//Paint the triangle
+	for (int i = 0; i < table.size(); i++) {
+		//Paint each row of the triangle from minx to maxx (included)
+		for (int j = table[i].minx; j <= table[i].maxx; j++) {
+			
+			/*Vector3 pixelCoords(j, i, 1);
+			Vector3 bcords = m * pixelCoords;
+			bcords.Clamp(0, 1);
+			bcords.Normalize()*/
+			float u = ((p1.y - p2.y) * (j - p2.x) + (p2.x - p1.x) * (i - p2.y)) / detT;
+			float v = ((p2.y - p0.y) * (j - p2.x) + (p0.x - p2.x) * (i - p2.y)) / detT;
+			float w = 1.0f - v - u;
+
+			//std::cout << "Suma " << bcords.x+bcords.y+bcords.z << std::endl;
+			// Interpolate color using barycentric coordinates
+			Color fillcolor = c0 * u + c1 * v + c2 * w;
+
+			SetPixelSafe(j, i, fillcolor);
+		}
+	}
+	
 }
+
+
+
 
 
 

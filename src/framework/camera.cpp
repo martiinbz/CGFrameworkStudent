@@ -8,7 +8,7 @@
 Camera::Camera()
 {
 	view_matrix.SetIdentity();
-	SetOrthographic(-1,1,1,-1,-1,1000);
+	SetOrthographic(-1,1,1,-1,-1,100);
 }
 
 Vector3 Camera::GetLocalVector(const Vector3& v)
@@ -89,7 +89,7 @@ void Camera::UpdateViewMatrix()
 	view_matrix.SetIdentity();
 
 	// Comment this line to create your own projection matrix!
-	//SetExampleViewMatrix();
+	SetExampleViewMatrix();
 
 	// Remember how to fill a Matrix4x4 (check framework slides)
 	// Careful with the order of matrix multiplications, and be sure to use normalized vectors!
@@ -100,36 +100,36 @@ void Camera::UpdateViewMatrix()
 	
 	
 
-	Vector3 side, forward, top;
+	//Vector3 side, forward, top;
 
-	forward = eye - center;
-	forward.Normalize();
-	side = forward.Cross(up);
-	side.Normalize();
-	top = side.Cross(forward);
+	//forward = eye - center;
+	//forward.Normalize();
+	//side = forward.Cross(up);
+	//side.Normalize();
+	//top = side.Cross(forward);
 
-	view_matrix.M[0][0] = side.x;
-	view_matrix.M[1][0] = side.y;
-	view_matrix.M[2][0] = side.z;
-	view_matrix.M[0][1] = top.x;
-	view_matrix.M[1][1] = top.y;
-	view_matrix.M[2][1] = top.z;
-	view_matrix.M[0][2] = -forward.x;
-	view_matrix.M[1][2] = -forward.y;
-	view_matrix.M[1][2] = -forward.z;
-	view_matrix.M[3][3] = 1;
+	//view_matrix.M[0][0] = side.x;
+	//view_matrix.M[1][0] = side.y;
+	//view_matrix.M[2][0] = side.z;
+	//view_matrix.M[0][1] = top.x;
+	//view_matrix.M[1][1] = top.y;
+	//view_matrix.M[2][1] = top.z;
+	//view_matrix.M[0][2] = -forward.x;
+	//view_matrix.M[1][2] = -forward.y;
+	//view_matrix.M[1][2] = -forward.z;
+	//view_matrix.M[3][3] = 1;
 
 
 
-		
+	//	
 
-		
-		
-	// view_matrix.M[3][3] = 1.0;
+	//	
+	//	
+	//// view_matrix.M[3][3] = 1.0;
 
-	// Translate view matrix
-	view_matrix.TranslateLocal(-position[0], -position[1], -position[2]);
-	
+	//// Translate view matrix
+	//view_matrix.TranslateLocal(-position[0], -position[1], -position[2]);
+	//
 	UpdateViewProjectionMatrix();
 }
 

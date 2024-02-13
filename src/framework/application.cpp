@@ -38,11 +38,11 @@ Application::Application(const char* caption, int width, int height)
     increase = false;
     decrease = false;
     Vector3 t1 = Vector3(0, 0, 2);
-    mesh.LoadOBJ("/meshes/anna.obj");
+    mesh.LoadOBJ("/meshes/lee.obj");
     mesh2.LoadOBJ("/meshes/lee.obj");
     mesh3.LoadOBJ("/meshes/cleo.obj");
-    rotationmatrix.SetRotation(DEG2RAD * 45, { 0,1,0 });
-    translationmatrix.SetTranslation(0,0,-0.3);
+    rotationmatrix.SetIdentity(); // (DEG2RAD * 45, { 0,1,0 });
+    translationmatrix.SetTranslation(0,0,0.0);
     rotationmatrix2.SetRotation(DEG2RAD * 90, { 0,1,0 });
     translationmatrix2.SetTranslation(0.4, 0.3,0);
     rotationmatrix3.SetRotation(DEG2RAD * 90, { 0,1,0 });
@@ -60,7 +60,7 @@ Application::Application(const char* caption, int width, int height)
     //camera1.Rotate(0.7, Vector3(0, 1, 0));
     //camera1.SetPerspective(45, w/h, 0.1, 100);
     //camera1.SetPerspective(45, w / h, 0.1, 100);
-    //camera1.LookAt(Vector3(40,0,0),Vector3(0,0,60),Vector3::UP);
+    camera1.LookAt(Vector3(0.5,0,0),Vector3(0,0,0),Vector3::UP);
     // camera1.Move((0, 0, 1));
    
    
@@ -84,10 +84,10 @@ void Application::Render(void)
 	// ...
     //entity2.Render(&framebuffer, &camera1, Color(255, 0, 0));
     framebuffer.Fill(Color::BLACK);
-    camera1.fov = current_fov;
-    if (draw_entity) {
-        entity4.Render(&framebuffer, &camera1, Color(255, 255, 255));
-    };
+    //camera1.fov = current_fov;
+    //if (draw_entity) {
+        entity.Render(&framebuffer, &camera1, Color(255, 255, 255));
+    //};
     if (animation) {
         entity.Render(&framebuffer, &camera1, Color(255, 255, 255));
         entity2.Render(&framebuffer, &camera1, Color(255, 0, 0));
@@ -101,7 +101,7 @@ void Application::Render(void)
 
     }
    
-    framebuffer.DrawTriangle(Vector2(100,200),Vector2(200,400),Vector2(600,200), Color::WHITE, true, Color::RED);
+    framebuffer.DrawTriangleInterpolated(Vector3(700,200,1), Vector3(300,600,1), Vector3(600,500,1), Color::RED, Color::YELLOW, Color::BLUE);
 
    
     framebuffer.Render();
@@ -117,7 +117,7 @@ void Application::Update(float seconds_elapsed)
         entity2.Update(seconds_elapsed / 2);
         entity3.Update(seconds_elapsed*2);
     };
-	
+    std::cout << seconds_elapsed << std::endl;
 }
 
 
@@ -260,15 +260,16 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
     if (event.button == SDL_BUTTON_LEFT) {
-       camera1.Orbit(-mouse_delta.x * 0.00000001, Vector3::UP);
-       camera1.Orbit(-mouse_delta.y *0.00000001,Vector3::RIGHT);
+       camera1.Orbit(-mouse_delta.x * 0.03, Vector3::UP);
+       camera1.Orbit(-mouse_delta.y *0.03,Vector3::RIGHT);
     }
 }
 
 void Application::OnWheel(SDL_MouseWheelEvent event)
 {
-    float dy = event.preciseY;
+    float dy = event.preciseY * 0.03;
     camera1.Zoom(dy < 0 ? 1.1 : 0.9);
+    int i;
 }
 void Application::OnFileChanged(const char* filename)
 { 
