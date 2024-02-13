@@ -30,12 +30,16 @@ class Image
 		unsigned int bpp; // Bits per pixel
 		unsigned char* data; // Bytes with the pixel information
 	} TGAInfo;
-
+	struct Cell {
+		float minx;
+		float maxx;
+	};
+	std::vector<Cell> table;
 public:
 	unsigned int width;
 	unsigned int height;
 	unsigned int bytes_per_pixel = 3; // Bits per pixel
-
+	
 	Color* pixels;
 
 	// Constructors
@@ -94,10 +98,11 @@ public:
 		return *this;
 	}
 	#endif
+	
 	void DrawLineDDA(int x0, int y0, int x1, int y1, const Color& c);
 	void DrawRect(int x, int y, int w, int h, const Color& borderColor, int borderWidth, bool isFilled, const Color& fillColor);
 	void Image::DrawCircle(int x, int y, int r, const Color& borderColor, int borderWidth, bool isFilled, const Color& fillColor);
-	void Image::ScanLineDDA(int x0, int y0, int x1, int y1, int& minX, int& maxX);
+	void Image::ScanLineDDA(int x0, int y0, int x1, int y1, std::vector<Cell>& table);
 	void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& borderColor, bool isFilled, const Color& fillColor);
 	void Image::DrawImage(const Image& image, int x, int y, bool top);
 	void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, const Color& c2);

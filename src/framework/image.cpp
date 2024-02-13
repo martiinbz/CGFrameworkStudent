@@ -12,6 +12,7 @@
 Image::Image() {
 	width = 0; height = 0;
 	pixels = NULL;
+	
 }
 
 Image::Image(unsigned int width, unsigned int height)
@@ -29,6 +30,8 @@ Image::Image(const Image& c)
 	width = c.width;
 	height = c.height;
 	bytes_per_pixel = c.bytes_per_pixel;
+	
+	
 	if(c.pixels)
 	{
 		pixels = new Color[width*height];
@@ -500,87 +503,49 @@ void Image::DrawCircle(int x, int y, int r, const Color& borderColor, int border
 
 
 }
-void Image::ScanLineDDA(int x0, int y0, int x1, int y1, int& minX, int& maxX)
-{
-	//mira si es horizontal
-	if (y0 == y1)
-		return;
+void Image::ScanLineDDA(int x0, int y0, int x1, int y1, std::vector<Cell>& table) {
 
-	// nos aseguramos que y0 <= y1
-	if (y0 > y1)
-	{
-		std::swap(x0, x1);
-		std::swap(y0, y1);
-	}
+	float dx = x1 - x0;
+	float dy = y1 - y0;
 
-	// calculamos el pendiente
-	float slope = (x1 - x0) / static_cast<float>(y1 - y0);
+	float d = std::max(dx, dy);
+	Vector2 v = Vector2(dx / d, dy / d);
+	float x = x0, y = y0;
 
-	// primer punto
-	minX = static_cast<int>(x0 + 0.5f);
-	maxX = static_cast<int>(x0 + 0.5f);
-
-	// ir actualizando minimo y maximo
-	for (int y = y0 + 1; y <= y1; ++y)
-	{
-		float x = x0 + slope * (y - y0) + 0.5f;
-		int currentX = static_cast<int>(x);
-
-		if (currentX < minX)
-			minX = currentX;
-		if (currentX > maxX)
-			maxX = currentX;
+	for (int i = 0; i < d; i++) {
+		//Update the table only if the calculated x and y coordinates are within the range of the image
+		if (y >= 0 && y < height) {
+			table[floor(y)].minx = std::min(floor(x), table[floor(y)].minx);
+			table[floor(y)].maxx = std::max(floor(x), table[floor(y)].maxx);
+		}
+		x += v.x;
+		y += v.y;
 	}
 }
+void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& borderColor, bool isFilled, const Color& fillColor) {
 
-void Image::DrawTriangle(const Vector2& p0, const Vector2& p1, const Vector2& p2, const Color& borderColor, bool isFilled, const Color& fillColor)
-{
-	int minX, maxX;
+	if (isFilled) {
+		//Create table
+		std::vector<Cell> table(height);
+		//Update table with the min and max x values of the triangle
+		ScanLineDDA(p0.x, p0.y, p1.x, p1.y, table);
+		ScanLineDDA(p0.x, p0.y, p2.x, p2.y, table);
+		ScanLineDDA(p1.x, p1.y, p2.x, p2.y, table);
+		//Paint the triangle
+		for (int i = 0; i < table.size(); i++) {
+			//Paint each row of the triangle from minx to maxx (included)
+			for (int j = table[i].minx; j <= table[i].maxx; j++) {
+				SetPixel(j, i, fillColor);
+			}
+		}
+	}
 
-	// Dibujamos los bordes( 3 lineas)
 	DrawLineDDA(p0.x, p0.y, p1.x, p1.y, borderColor);
+	DrawLineDDA(p0.x, p0.y, p2.x, p2.y, borderColor);
 	DrawLineDDA(p1.x, p1.y, p2.x, p2.y, borderColor);
-	DrawLineDDA(p2.x, p2.y, p0.x, p0.y, borderColor);
-
-	// Rellenamos el triangulo
-	if (isFilled)
-	{   //pintamos p0p1
-		for (int y = static_cast<int>(p0.y) + 1; y < static_cast<int>(p1.y); ++y)
-		{
-			//x minima y maxima de p.1
-			ScanLineDDA(p0.x, p0.y, p1.x, p1.y, minX, maxX);
-
-			// Dibujamos esa linea
-			for (int x = minX; x < maxX; ++x)
-			{
-				SetPixel(x, y, fillColor);
-			}
-		}
-		//lo mismo con p1p2
-		for (int y = static_cast<int>(p1.y) + 1; y < static_cast<int>(p2.y); ++y)
-		{
-			
-			ScanLineDDA(p1.x, p1.y, p2.x, p2.y, minX, maxX);
-
-			for (int x = minX; x < maxX; ++x)
-			{
-				SetPixel(x, y, fillColor);
-			}
-		}
-		//lo mismo con p2p0
-		for (int y = static_cast<int>(p2.y) + 1; y < static_cast<int>(p0.y); ++y)
-		{
-			
-			ScanLineDDA(p2.x, p2.y, p0.x, p0.y, minX, maxX);
-
-			
-			for (int x = minX; x < maxX; ++x)
-			{
-				SetPixel(x, y, fillColor);
-			}
-		}
-	}
 }
+
+	
 void Image::DrawImage(const Image& image, int x, int y, bool top)
 {
 	// Ver si la imagen es válida

@@ -101,7 +101,7 @@ void Application::Render(void)
 
     }
    
-    
+   // framebuffer.DrawTriangle(Vector2(100,200),Vector2(200,400),Vector2(600,200), Color::WHITE, true, Color::RED);
 
    
     framebuffer.Render();
@@ -260,15 +260,15 @@ void Application::OnMouseButtonUp( SDL_MouseButtonEvent event )
 void Application::OnMouseMove(SDL_MouseButtonEvent event)
 {
     if (event.button == SDL_BUTTON_LEFT) {
-        //camera1.Orbit(-mouse_delta.x * 0.01, Vector3::UP);
-      // camera1.Orbit(-mouse_delta.y * 0.01, Vector3::RIGHT);
+       camera1.Orbit(-mouse_delta.x * 0.00000001, Vector3::UP);
+       camera1.Orbit(-mouse_delta.y *0.00000001,Vector3::RIGHT);
     }
 }
 
 void Application::OnWheel(SDL_MouseWheelEvent event)
 {
     float dy = event.preciseY;
-    //camera1.Zoom(dy < 0 ? 1.1 : 0.9);
+    camera1.Zoom(dy < 0 ? 1.1 : 0.9);
 }
 void Application::OnFileChanged(const char* filename)
 { 
