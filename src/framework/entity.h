@@ -11,12 +11,13 @@ private:
 	Matrix44 modelmatrix;
 	Matrix44 rotationmatrix;
 	Matrix44 translationmatrix;
+	Image texture;
 
 
 public: 
 	Entity();
-	Entity(Mesh& mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix);
-	void Render(Image* framebuffer, Camera* camera, const Color& c);
+	Entity(Mesh& mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Image& texture1);
+	void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* zBuffer, bool texture, bool inter);
 	void Entity::Update(float seconds_elapsed);
 
 

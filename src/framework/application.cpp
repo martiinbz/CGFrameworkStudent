@@ -22,8 +22,8 @@ Application::Application(const char* caption, int width, int height)
     this->keystate = SDL_GetKeyboardState(nullptr);
 
     this->framebuffer.Resize(w, h);
-
-
+    this->zbuffer.Resize(w, h);
+    zbuffer.Fill(FLT_MAX);
     int start_x, start_y, start_z, end_x, end_y, end_z;
     int current_fov = 45;
     int current_near = 0.01;
@@ -41,6 +41,7 @@ Application::Application(const char* caption, int width, int height)
     mesh.LoadOBJ("/meshes/lee.obj");
     mesh2.LoadOBJ("/meshes/lee.obj");
     mesh3.LoadOBJ("/meshes/cleo.obj");
+    
     rotationmatrix.SetIdentity(); // (DEG2RAD * 45, { 0,1,0 });
     translationmatrix.SetTranslation(0,0,0.0);
     rotationmatrix2.SetRotation(DEG2RAD * 90, { 0,1,0 });
@@ -48,14 +49,14 @@ Application::Application(const char* caption, int width, int height)
     rotationmatrix3.SetRotation(DEG2RAD * 90, { 0,1,0 });
     translationmatrix3.SetTranslation(0.2,-0.3, 0);
     
-    
+    texture1.LoadTGA("/textures/lee_normal.tga");
 
-    entity = Entity(mesh, rotationmatrix,translationmatrix);
-    entity2 = Entity(mesh2, rotationmatrix2, translationmatrix2);
+    entity = Entity(mesh, rotationmatrix,translationmatrix,texture1);
+    /*entity2 = Entity(mesh2, rotationmatrix2, translationmatrix2);
     entity3 = Entity(mesh3, rotationmatrix3, translationmatrix3);
     entity4 = Entity(mesh3, rotationmatrix4, translationmatrix4);
-    
-    
+    */
+   
     
     //camera1.Rotate(0.7, Vector3(0, 1, 0));
     //camera1.SetPerspective(45, w/h, 0.1, 100);
@@ -81,17 +82,18 @@ void Application::Init(void)
 
 void Application::Render(void)
 {
+    
 	// ...
     //entity2.Render(&framebuffer, &camera1, Color(255, 0, 0));
-    framebuffer.Fill(Color::BLACK);
+   // framebuffer.Fill(Color::BLACK);
     //camera1.fov = current_fov;
     //if (draw_entity) {
-        entity.Render(&framebuffer, &camera1, Color(255, 255, 255));
+     entity.Render(&framebuffer, &camera1,&zbuffer,false,true );
     //};
     if (animation) {
-        entity.Render(&framebuffer, &camera1, Color(255, 255, 255));
-        entity2.Render(&framebuffer, &camera1, Color(255, 0, 0));
-        entity3.Render(&framebuffer, &camera1, Color(0, 255, 0));
+       /* entity.Render(&framebuffer, &camera1, &zbuffer);
+        entity2.Render(&framebuffer, &camera1, &zbuffer);
+        entity3.Render(&framebuffer, &camera1, &zbuffer);*/
     };
     if (ortographic) {
         camera1.SetOrthographic(0, 10, 0,10,0.01, 100);
@@ -101,11 +103,10 @@ void Application::Render(void)
 
     }
    
-    framebuffer.DrawTriangleInterpolated(Vector3(700,200,1), Vector3(300,600,1), Vector3(600,500,1), Color::RED, Color::YELLOW, Color::BLUE);
-
+   // framebuffer.DrawTriangleInterpolated(Vector3(700, 200, 1), Vector3(300, 600, 1), Vector3(600, 500, 1), Color::RED, Color::GREEN, Color::BLUE);
    
     framebuffer.Render();
-		
+   
 	
 }
 

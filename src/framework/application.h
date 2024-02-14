@@ -25,7 +25,7 @@ private:
 	Entity entity2, entity3, entity4;
 	Camera camera1;
 	bool draw_entity, animation, ortographic, perspective, change_near, change_far, change_fov, increase, decrease;
-
+	Image texture1;
 
 	
 	
@@ -54,7 +54,7 @@ public:
 
 	// CPU Global framebuffer
 	Image framebuffer;
-
+	FloatImage zbuffer;
 	// Constructor and main methods
 	Application(const char* caption, int width, int height);
 	~Application();

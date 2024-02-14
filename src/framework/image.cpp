@@ -577,7 +577,8 @@ void Image::DrawImage(const Image& image, int x, int y, bool top)
 		}
 	}
 }
-void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, const Color& c2) {
+void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, 
+	const Color& c2, FloatImage* zbuffer, Image* texture, const Vector2& uv0, const Vector2& uv1, const Vector2& uv2) {
 	std::vector<Cell> table(height);
 	Matrix44 m;
 	
@@ -591,16 +592,16 @@ void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const
 	ScanLineDDA(p0.x, p0.y, p2.x, p2.y, table);
 
 	m.M[0][0] = p0.x;
-	m.M[0][1] = p1.x;
-	m.M[0][2] = p2.x;
-	m.M[1][0] = p0.y;
+	m.M[1][0] = p1.x;
+	m.M[2][0] = p2.x;
+	m.M[0][1] = p0.y;
 	m.M[1][1] = p1.y;
-	m.M[1][2] = p2.y;
-	m.M[2][0] = 1;
-	m.M[2][1] = 1;
+	m.M[2][1] = p2.y;
+	m.M[0][2] = 1;
+	m.M[1][2] = 1;
 	m.M[2][2] = 1;
 	m.Inverse();
-	float detT = p0.x * (p1.y - p2.y) - p1.x * (p0.y - p2.y) + p2.x * (p0.y - p1.y);
+	
 	
 	
 
@@ -608,20 +609,35 @@ void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const
 	for (int i = 0; i < table.size(); i++) {
 		//Paint each row of the triangle from minx to maxx (included)
 		for (int j = table[i].minx; j <= table[i].maxx; j++) {
-			
-			/*Vector3 pixelCoords(j, i, 1);
+			Color fillcolor;
+			Vector3 pixelCoords(j, i, 1);
 			Vector3 bcords = m * pixelCoords;
 			bcords.Clamp(0, 1);
-			bcords.Normalize()*/
-			float u = ((p1.y - p2.y) * (j - p2.x) + (p2.x - p1.x) * (i - p2.y)) / detT;
-			float v = ((p2.y - p0.y) * (j - p2.x) + (p0.x - p2.x) * (i - p2.y)) / detT;
-			float w = 1.0f - v - u;
-
-			//std::cout << "Suma " << bcords.x+bcords.y+bcords.z << std::endl;
+			float bcords_sum = bcords.x + bcords.y + bcords.z;
+			bcords = bcords / bcords_sum;
+			
 			// Interpolate color using barycentric coordinates
-			Color fillcolor = c0 * u + c1 * v + c2 * w;
+			if (texture == nullptr) {
+				fillcolor = c0 * bcords.x + c1 * bcords.y + c2 * bcords.z;
+			}
+			else {
+				Vector3 uv30 = (uv0.x, uv0.y, 1);
+				Vector3 uv31 = (uv1.x, uv1.y, 1);
+				Vector3 uv32 = (uv2.x, uv2.y, 1);
+				fillcolor = bcords.x * uv30 + bcords.y * uv31 + bcords.z * uv32;
+				
+			}
 
-			SetPixelSafe(j, i, fillcolor);
+			//SetPixelSafe(j, i, fillcolor);
+
+			float zcords = p0.z * bcords.x + p1.z * bcords.y + p2.z * bcords.z;
+			
+			if (zcords< zbuffer->GetPixel(j, i)) {
+				SetPixelSafe(j, i, fillcolor);
+				zbuffer->SetPixel(j,i, zcords);
+			}
+
+			
 		}
 	}
 	
