@@ -104,9 +104,9 @@ void Application::Render(void)
     }
    
    // framebuffer.DrawTriangleInterpolated(Vector3(700, 200, 1), Vector3(300, 600, 1), Vector3(600, 500, 1), Color::RED, Color::GREEN, Color::BLUE);
-   
+    
     framebuffer.Render();
-   
+    
 	
 }
 
