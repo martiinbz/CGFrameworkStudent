@@ -19,9 +19,10 @@ Entity::Entity(Mesh& mesh1, Matrix44& rotationmatrix,Matrix44& translationmatrix
    
 }
 
-void Entity::Render(Image* framebuffer, Camera* camera,FloatImage* zBuffer,bool bool_texture, bool bool_interpolate){
+void Entity::Render(Image* framebuffer, Camera* camera,FloatImage* zBuffer,bool bool_texture, bool bool_interpolate,bool oclussion){
     //obtenemos los vertices
     const std::vector<Vector3>& meshVertices = mesh.GetVertices();
+
 
     //iteramos
     for (int i = 0; i < meshVertices.size(); i += 3) {
@@ -61,41 +62,34 @@ void Entity::Render(Image* framebuffer, Camera* camera,FloatImage* zBuffer,bool 
         Vector2 uv1 = mesh.GetUVs()[i + 1];
         Vector2 uv2 = mesh.GetUVs()[i + 2];
 
+        Vector3 vv0 = Vector3(static_cast<int>(screenSpaceV0.x), static_cast<int>(screenSpaceV0.y), static_cast<float>(clipSpaceV0.z));
+        Vector3 vv1 = Vector3(static_cast<int>(screenSpaceV1.x), static_cast<int>(screenSpaceV1.y), static_cast<float>(clipSpaceV1.z));
+        Vector3 vv2 = Vector3(static_cast<int>(screenSpaceV2.x), static_cast<int>(screenSpaceV2.y), static_cast<float>(clipSpaceV2.z));
 
         uv0.x = ((uv0.x + 1) * (screenWidth - 1)) / 2;
-        uv0.y = ((uv0.y + 1) * (screenHeight - 1)) / 2;
+        uv0.y = (((uv0.y + 1) * (screenHeight - 1)) / 2);
 
         uv1.x = ((uv1.x + 1) * (screenWidth - 1)) / 2;
-        uv1.y = ((uv1.y + 1) * (screenHeight - 1)) / 2;
+        uv1.y = (((uv1.y + 1) * (screenHeight - 1)) / 2);
 
         uv2.x = ((uv2.x + 1) * (screenWidth - 1)) / 2;
-        uv2.y = ((uv2.y + 1) * (screenHeight - 1)) / 2;
+        uv2.y = (((uv2.y + 1) * (screenHeight - 1)) / 2);
 
         //vamos dibujando los triangulos ppor pantalla
         if (bool_texture == true) {
-           
-           Vector3 vv0= Vector3(static_cast<int>(screenSpaceV0.x), static_cast<int>(screenSpaceV0.y), static_cast<int>(clipSpaceV0.z));
-          Vector3 vv1=  Vector3(static_cast<int>(screenSpaceV1.x), static_cast<int>(screenSpaceV1.y), static_cast<int>(clipSpaceV1.z));
-           Vector3 vv2=Vector3(static_cast<int>(screenSpaceV2.x), static_cast<int>(screenSpaceV2.y), static_cast<int>(clipSpaceV2.z));
-           
             
-            
-          framebuffer->DrawTriangleInterpolated(vv0, vv1, vv2, Color::RED, Color::GREEN, Color::BLUE, zBuffer,&texture,uv0,uv1,uv2);
+           framebuffer->DrawTriangleInterpolated(vv0, vv1, vv2, Color::RED, Color::GREEN, Color::BLUE, zBuffer,&texture,uv0,uv1,uv2,oclussion);
         }
         else if (bool_texture == false && bool_interpolate == true) {
 
-            Vector3 vv0 = Vector3(static_cast<int>(screenSpaceV0.x), static_cast<int>(screenSpaceV0.y), static_cast<int>(clipSpaceV0.z));
-            Vector3 vv1 = Vector3(static_cast<int>(screenSpaceV1.x), static_cast<int>(screenSpaceV1.y), static_cast<int>(clipSpaceV1.z));
-            Vector3 vv2 = Vector3(static_cast<int>(screenSpaceV2.x), static_cast<int>(screenSpaceV2.y), static_cast<int>(clipSpaceV2.z));
-           
-
-            framebuffer->DrawTriangleInterpolated(vv0, vv1, vv2, Color::RED, Color::GREEN, Color::BLUE, zBuffer, nullptr, uv0, uv1, uv2);
+            framebuffer->DrawTriangleInterpolated(vv0, vv1, vv2, Color::RED, Color::GREEN, Color::BLUE, zBuffer, nullptr, uv0, uv1, uv2,oclussion);
         }
-        /*Vector3 vv0 = Vector3(static_cast<int>(screenSpaceV0.x), static_cast<int>(screenSpaceV0.y), static_cast<int>(clipSpaceV0.z));
-        Vector3 vv1 = Vector3(static_cast<int>(screenSpaceV1.x), static_cast<int>(screenSpaceV1.y), static_cast<int>(clipSpaceV1.z));
-        Vector3 vv2 = Vector3(static_cast<int>(screenSpaceV2.x), static_cast<int>(screenSpaceV2.y), static_cast<int>(clipSpaceV2.z));*/
-       // framebuffer->DrawTriangle(screenSpaceV0, screenSpaceV1, screenSpaceV2, Color::WHITE, true, Color::WHITE);
-       //framebuffer->DrawTriangleInterpolated(vv0,vv1,vv2, Color::RED,Color::GREEN,Color::BLUE,zBuffer);
+        else {
+            framebuffer->DrawTriangle(screenSpaceV0, screenSpaceV1, screenSpaceV2, Color::WHITE, true, Color::WHITE);
+
+        }
+        
+       
 
        
         /*

@@ -24,7 +24,7 @@ private:
 	Entity entity;
 	Entity entity2, entity3, entity4;
 	Camera camera1;
-	bool draw_entity, animation, ortographic, perspective, change_near, change_far, change_fov, increase, decrease;
+	bool draw_entity, animation, ortographic, perspective, change_near, change_far, change_fov, increase, decrease, interpolated_bool, texture_bool, oclussion;
 	Image texture1;
 
 	

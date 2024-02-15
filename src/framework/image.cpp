@@ -578,15 +578,11 @@ void Image::DrawImage(const Image& image, int x, int y, bool top)
 	}
 }
 void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Color& c0, const Color& c1, 
-	const Color& c2, FloatImage* zbuffer, Image* texture, const Vector2& uv0, const Vector2& uv1, const Vector2& uv2) {
+	const Color& c2, FloatImage* zbuffer, Image* texture, const Vector2& uv0, const Vector2& uv1, const Vector2& uv2,bool oclussion) {
 	std::vector<Cell> table(height);
 	Matrix44 m;
-	
 
 	
-
-	
-	//Update table with the min and max x values of the triangle
 	ScanLineDDA(p0.x, p0.y, p1.x, p1.y, table);
 	ScanLineDDA(p1.x, p1.y, p2.x, p2.y, table);
 	ScanLineDDA(p0.x, p0.y, p2.x, p2.y, table);
@@ -602,9 +598,6 @@ void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const
 	m.M[2][2] = 1;
 	m.Inverse();
 	
-	
-	
-
 	//Paint the triangle
 	for (int i = 0; i < table.size(); i++) {
 		//Paint each row of the triangle from minx to maxx (included)
@@ -616,31 +609,35 @@ void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const
 			float bcords_sum = bcords.x + bcords.y + bcords.z;
 			bcords = bcords / bcords_sum;
 			
-			// Interpolate color using barycentric coordinates
 			if (texture == nullptr) {
 				fillcolor = c0 * bcords.x + c1 * bcords.y + c2 * bcords.z;
 			}
 			else {
-				Vector3 uv30 = (uv0.x, uv0.y, 1);
-				Vector3 uv31 = (uv1.x, uv1.y, 1);
-				Vector3 uv32 = (uv2.x, uv2.y, 1);
-				fillcolor = bcords.x * uv30 + bcords.y * uv31 + bcords.z * uv32;
 				
-			}
-
-			//SetPixelSafe(j, i, fillcolor);
-
-			float zcords = p0.z * bcords.x + p1.z * bcords.y + p2.z * bcords.z;
 			
-			if (zcords< zbuffer->GetPixel(j, i)) {
+				float interpolatedU = uv0.x * bcords.x + uv1.x * bcords.y + uv2.x * bcords.z;
+				float interpolatedV = uv0.y * bcords.x + uv1.y * bcords.y + uv2.y * bcords.z;
+
+				//float interpolatedU2 = (interpolatedU ) * (texture->width-1) / 2;
+				//float interpolatedV2 = (interpolatedV ) * (texture->height-1) / 2;
+
+				fillcolor=texture->GetPixelSafe(interpolatedU, interpolatedV);
+			}
+			
+			if (oclussion) {
+				float zcords = p0.z * bcords.x + p1.z * bcords.y + p2.z * bcords.z;
+
+				if (zcords < zbuffer->GetPixel(j,i)) {
+					
+					zbuffer->SetPixel(j, i, zcords);
+					SetPixelSafe(j, i, fillcolor);
+				}
+			}
+			else {
 				SetPixelSafe(j, i, fillcolor);
-				zbuffer->SetPixel(j,i, zcords);
-			}
-
-			
+			}	
 		}
 	}
-	
 }
 
 

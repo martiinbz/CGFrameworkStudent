@@ -17,7 +17,7 @@ private:
 public: 
 	Entity();
 	Entity(Mesh& mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Image& texture1);
-	void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* zBuffer, bool texture, bool inter);
+	void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* zBuffer, bool texture, bool inter,bool oclussion);
 	void Entity::Update(float seconds_elapsed);
 
 
