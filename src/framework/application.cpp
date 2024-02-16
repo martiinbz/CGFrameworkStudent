@@ -23,7 +23,7 @@ Application::Application(const char* caption, int width, int height)
 
     this->framebuffer.Resize(w, h);
     this->zbuffer.Resize(w, h);
-    zbuffer.Fill(FLT_MAX);
+    
     int start_x, start_y, start_z, end_x, end_y, end_z;
     int current_fov = 45;
     int current_near = 0.01;
@@ -55,17 +55,14 @@ Application::Application(const char* caption, int width, int height)
     texture1.LoadTGA("/textures/lee_color_specular.tga");
 
     entity = Entity(mesh, rotationmatrix,translationmatrix,texture1);
-    /*entity2 = Entity(mesh2, rotationmatrix2, translationmatrix2);
+   /* entity2 = Entity(mesh2, rotationmatrix2, translationmatrix2);
     entity3 = Entity(mesh3, rotationmatrix3, translationmatrix3);
     entity4 = Entity(mesh3, rotationmatrix4, translationmatrix4);*/
     
    
-    
-    //camera1.Rotate(0.7, Vector3(0, 1, 0));
-    //camera1.SetPerspective(45, w/h, 0.1, 100);
-    //camera1.SetPerspective(45, w / h, 0.1, 100);
+   
     camera1.LookAt(Vector3(0.5,0,0),Vector3(0,0,0),Vector3::UP);
-    // camera1.Move((0, 0, 1));
+    
    
    
 	
@@ -87,15 +84,15 @@ void Application::Render(void)
 {
     
 	// ...
-    //entity2.Render(&framebuffer, &camera1, Color(255, 0, 0));
+   
     framebuffer.Fill(Color::BLACK);
-    //camera1.fov = current_fov;
-     zbuffer.Fill(FLT_MAX);
+  
+    
     //if (draw_entity) {
      entity.Render(&framebuffer, &camera1,&zbuffer,texture_bool,interpolated_bool,oclussion);
-    //};
+    
     if (animation) {
-       /* entity.Render(&framebuffer, &camera1, &zbuffer);
+       /*entity.Render(&framebuffer, &camera1, &zbuffer);
         entity2.Render(&framebuffer, &camera1, &zbuffer);
         entity3.Render(&framebuffer, &camera1, &zbuffer);*/
     };
@@ -108,7 +105,7 @@ void Application::Render(void)
     }
    
    // framebuffer.DrawTriangleInterpolated(Vector3(700, 200, 1), Vector3(300, 600, 1), Vector3(600, 500, 1), Color::RED, Color::GREEN, Color::BLUE);
-    
+    zbuffer.Fill(FLT_MAX);
     framebuffer.Render();
     
 	
@@ -122,7 +119,7 @@ void Application::Update(float seconds_elapsed)
         entity2.Update(seconds_elapsed / 2);
         entity3.Update(seconds_elapsed*2);
     };
-    std::cout << seconds_elapsed << std::endl;
+    
 }
 
 

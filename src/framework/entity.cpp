@@ -52,46 +52,41 @@ void Entity::Render(Image* framebuffer, Camera* camera,FloatImage* zBuffer,bool 
         int screenWidth = framebuffer->width;
         int screenHeight = framebuffer->height;
 
-        
         Vector2 screenSpaceV0 = Vector2((((clipSpaceV0.x + 1.0f) * screenWidth) / 2), (((clipSpaceV0.y + 1.0f) * screenHeight) / 2));
         Vector2 screenSpaceV1 = Vector2((((clipSpaceV1.x + 1.0f) * screenWidth) / 2), (((clipSpaceV1.y + 1.0f) * screenHeight) / 2));
         Vector2 screenSpaceV2 = Vector2((((clipSpaceV2.x + 1.0f) * screenWidth) / 2), (((clipSpaceV2.y + 1.0f) * screenHeight) / 2));
 
-        
+        //obtenemos los UVS del triangulo
         Vector2 uv0 = mesh.GetUVs()[i];
         Vector2 uv1 = mesh.GetUVs()[i + 1];
         Vector2 uv2 = mesh.GetUVs()[i + 2];
 
-        Vector3 vv0 = Vector3(static_cast<int>(screenSpaceV0.x), static_cast<int>(screenSpaceV0.y), static_cast<float>(clipSpaceV0.z));
-        Vector3 vv1 = Vector3(static_cast<int>(screenSpaceV1.x), static_cast<int>(screenSpaceV1.y), static_cast<float>(clipSpaceV1.z));
-        Vector3 vv2 = Vector3(static_cast<int>(screenSpaceV2.x), static_cast<int>(screenSpaceV2.y), static_cast<float>(clipSpaceV2.z));
+        //convertimos d vector2 a vector3 para poder usar el zbuffer
+        Vector3 vv0 = Vector3(screenSpaceV0.x, screenSpaceV0.y, clipSpaceV0.z);
+        Vector3 vv1 = Vector3(screenSpaceV1.x, screenSpaceV1.y, clipSpaceV1.z);
+        Vector3 vv2 = Vector3(screenSpaceV2.x, screenSpaceV2.y, clipSpaceV2.z);
 
-        uv0.x = ((uv0.x + 1) * (screenWidth - 1)) / 2;
-        uv0.y = (((uv0.y + 1) * (screenHeight - 1)) / 2);
 
-        uv1.x = ((uv1.x + 1) * (screenWidth - 1)) / 2;
-        uv1.y = (((uv1.y + 1) * (screenHeight - 1)) / 2);
+        
+        
+        //depenediendo del modo dibujamos la mesh de una manera u otra
 
-        uv2.x = ((uv2.x + 1) * (screenWidth - 1)) / 2;
-        uv2.y = (((uv2.y + 1) * (screenHeight - 1)) / 2);
-
-        //vamos dibujando los triangulos ppor pantalla
+        //mesh con textura
         if (bool_texture == true) {
             
            framebuffer->DrawTriangleInterpolated(vv0, vv1, vv2, Color::RED, Color::GREEN, Color::BLUE, zBuffer,&texture,uv0,uv1,uv2,oclussion);
         }
+        //mesh con triangulos interpolados
         else if (bool_texture == false && bool_interpolate == true) {
 
             framebuffer->DrawTriangleInterpolated(vv0, vv1, vv2, Color::RED, Color::GREEN, Color::BLUE, zBuffer, nullptr, uv0, uv1, uv2,oclussion);
         }
+        //mesh con color plano
         else {
-            framebuffer->DrawTriangle(screenSpaceV0, screenSpaceV1, screenSpaceV2, Color::WHITE, true, Color::WHITE);
+            framebuffer->DrawTriangle(screenSpaceV0, screenSpaceV1, screenSpaceV2, Color::BLUE, true, Color::BLUE);
 
         }
         
-       
-
-       
         /*
         std::cout << "Segundo VECTOR y " << screenSpaceV0.y << std::endl;
         std::cout << "Segundo VECTOR x " << screenSpaceV1.x << std::endl;
