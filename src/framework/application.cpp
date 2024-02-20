@@ -79,37 +79,25 @@ Application::~Application()
 void Application::Init(void)
 {
 	std::cout << "Initiating app..." << std::endl;
-
+    shader.Get("shaders/quad.vs", "shaders/quad.fs");
+    
+    
+    quad.CreateQuad();
+    
 }
 
 
 void Application::Render(void)
 {
     
-	// ...
-    //entity2.Render(&framebuffer, &camera1, Color(255, 0, 0));
-    framebuffer.Fill(Color::BLACK);
-    //camera1.fov = current_fov;
-     zbuffer.Fill(FLT_MAX);
-    //if (draw_entity) {
-     entity.Render(&framebuffer, &camera1,&zbuffer,texture_bool,interpolated_bool,oclussion);
-    //};
-    if (animation) {
-       /* entity.Render(&framebuffer, &camera1, &zbuffer);
-        entity2.Render(&framebuffer, &camera1, &zbuffer);
-        entity3.Render(&framebuffer, &camera1, &zbuffer);*/
-    };
-    if (ortographic) {
-        camera1.SetOrthographic(0, 10, 0,10,0.01, 100);
-    }
-    if (perspective) {
-        camera1.SetPerspective(DEG2RAD*current_fov, w/h, current_near,current_far);
-
-    }
-   
-   // framebuffer.DrawTriangleInterpolated(Vector3(700, 200, 1), Vector3(300, 600, 1), Vector3(600, 500, 1), Color::RED, Color::GREEN, Color::BLUE);
+	
+    shader.Enable();
+    glEnable(GL_DEPTH);
+    shader.SetFloat("time", time);
+    quad.Render();
+    glDisable(GL_DEPTH);
     
-    framebuffer.Render();
+    shader.Disable();
     
 	
 }

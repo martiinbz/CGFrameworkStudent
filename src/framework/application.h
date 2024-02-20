@@ -9,6 +9,7 @@
 #include "button.h"
 #include "image.h"
 #include "entity.h"
+#include "shader.h"
 
 
 
@@ -26,8 +27,8 @@ private:
 	Camera camera1;
 	bool draw_entity, animation, ortographic, perspective, change_near, change_far, change_fov, increase, decrease, interpolated_bool, texture_bool, oclussion;
 	Image texture1;
-
-	
+	Shader shader; 
+	Mesh quad;
 	
 public:
 
