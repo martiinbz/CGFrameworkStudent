@@ -587,6 +587,7 @@ void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const
 	ScanLineDDA(p1.x, p1.y, p2.x, p2.y, table);
 	ScanLineDDA(p0.x, p0.y, p2.x, p2.y, table);
 
+	//creamos la matriz
 	m.M[0][0] = p0.x;
 	m.M[1][0] = p1.x;
 	m.M[2][0] = p2.x;
@@ -602,28 +603,38 @@ void Image::DrawTriangleInterpolated(const Vector3& p0, const Vector3& p1, const
 	for (int i = 0; i < table.size(); i++) {
 		//Paint each row of the triangle from minx to maxx (included)
 		for (int j = table[i].minx; j <= table[i].maxx; j++) {
+
+
 			Color fillcolor;
 			Vector3 pixelCoords(j, i, 1);
+			//multiplicamos el pixel por la matriz baricentrica para obtener las coordenadas baricentricas
 			Vector3 bcords = m * pixelCoords;
+			//cambiamos de rango y dividimos por la suma
 			bcords.Clamp(0, 1);
 			float bcords_sum = bcords.x + bcords.y + bcords.z;
 			bcords = bcords / bcords_sum;
 			
+			//pintamos con los triangulos interpolados
 			if (texture == nullptr) {
 				fillcolor = c0 * bcords.x + c1 * bcords.y + c2 * bcords.z;
 			}
 			else {
 				
-			
-				float interpolatedU = uv0.x * bcords.x + uv1.x * bcords.y + uv2.x * bcords.z;
-				float interpolatedV = uv0.y * bcords.x + uv1.y * bcords.y + uv2.y * bcords.z;
+			//interpolamos las 2 componentes de los vectores UV
+				
+				Vector2 interpolatedcord = uv0 * bcords.x + uv1 * bcords.y + uv2 * bcords.z;
 
-				//float interpolatedU2 = (interpolatedU ) * (texture->width-1) / 2;
-				//float interpolatedV2 = (interpolatedV ) * (texture->height-1) / 2;
-
-				fillcolor=texture->GetPixelSafe(interpolatedU, interpolatedV);
+				//pasamos de [0,1] al espacio de la textura
+				Vector2 pixelcord;
+				pixelcord.x = (interpolatedcord.x ) * (texture->width) / 2;
+				pixelcord.y = (interpolatedcord.y ) * (texture->height) / 2;
+				
+				//cogemos el color de ese pixel en la textura
+				fillcolor =texture->GetPixel(static_cast<int>(pixelcord.x), static_cast<int>(pixelcord.y));
+				
+				
 			}
-			
+			//para alternar entre usar el zbuffer o no
 			if (oclussion) {
 				float zcords = p0.z * bcords.x + p1.z * bcords.y + p2.z * bcords.z;
 
