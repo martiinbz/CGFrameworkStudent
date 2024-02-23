@@ -51,7 +51,7 @@ Application::Application(const char* caption, int width, int height)
     translationmatrix2.SetTranslation(0.4, 0.3,0);
     rotationmatrix3.SetRotation(DEG2RAD * 90, { 0,1,0 });
     translationmatrix3.SetTranslation(0.2,-0.3, 0);
-    
+    Matrix44 viewprojection = translationmatrix * rotationmatrix;
     texture1.LoadTGA("/textures/lee_color_specular.tga");
 
     entity = Entity(mesh, rotationmatrix,translationmatrix,texture1);
@@ -64,7 +64,7 @@ Application::Application(const char* caption, int width, int height)
     camera1.LookAt(Vector3(0.5,0,0),Vector3(0,0,0),Vector3::UP);
     
    
-   
+  
 	
 }
 
@@ -76,10 +76,13 @@ Application::~Application()
 void Application::Init(void)
 {
 	std::cout << "Initiating app..." << std::endl;
-    shader.Get("/shaders/quad.vs", "/shaders/quad.fs");
- 
     
     quad.CreateQuad();
+    shader1 = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+   
+    // shader1->Get("shaders/quad.vs", "shaders/quad.fs");
+    
+    
     
 }
 
@@ -88,15 +91,14 @@ void Application::Render(void)
 {
     
 
-	
-    shader.Enable();
-
+    shader1->Enable();
     glEnable(GL_DEPTH_TEST);
-    shader.SetFloat("time", time);
+    
+    shader1->SetFloat("time", 1.0);
     quad.Render();
     glDisable(GL_DEPTH_TEST);
     
-   // shader.Disable();
+   // shader1->Disable();
 
 	// ...
    
@@ -104,7 +106,7 @@ void Application::Render(void)
   
     
     //if (draw_entity) {
-     entity.Render(&framebuffer, &camera1,&zbuffer,texture_bool,interpolated_bool,oclussion);
+    // entity.Render(&framebuffer, &camera1,&zbuffer,texture_bool,interpolated_bool,oclussion);
     
     if (animation) {
        /*entity.Render(&framebuffer, &camera1, &zbuffer);
