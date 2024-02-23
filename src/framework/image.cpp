@@ -117,7 +117,7 @@ void Image::FlipY()
 {
 	int row_size = bytes_per_pixel * width;
 	Uint8* temp_row = new Uint8[row_size];
-#pragma omp simd
+	#pragma omp simd
 	for (int y = 0; y < height * 0.5; y += 1)
 	{
 		Uint8* pos = (Uint8*)pixels + y * row_size;

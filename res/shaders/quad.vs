@@ -6,5 +6,5 @@ void main()
 	v_uv = gl_MultiTexCoord0.xy;
 
 
-	gl_Position = vec4(1.0, 1.0, 0.0, 1.0) ;
+	gl_Position = gl_Vertex ;
 }
