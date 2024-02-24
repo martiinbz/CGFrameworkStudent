@@ -41,26 +41,8 @@ Application::Application(const char* caption, int width, int height)
     interpolated_bool = false;
     oclussion = false;
     Vector3 t1 = Vector3(0, 0, 2);
-    mesh.LoadOBJ("/meshes/lee.obj");
-    mesh2.LoadOBJ("/meshes/anna.obj");
-    mesh3.LoadOBJ("/meshes/cleo.obj");
     
-    rotationmatrix.SetIdentity(); // (DEG2RAD * 45, { 0,1,0 });
-    translationmatrix.SetTranslation(0,0,0.0);
-    rotationmatrix2.SetRotation(DEG2RAD * 90, { 0,1,0 });
-    translationmatrix2.SetTranslation(0.4, 0.3,0);
-    rotationmatrix3.SetRotation(DEG2RAD * 90, { 0,1,0 });
-    translationmatrix3.SetTranslation(0.2,-0.3, 0);
-    Matrix44 viewprojection = translationmatrix * rotationmatrix;
-    texture1.LoadTGA("/textures/lee_color_specular.tga");
-
-    entity = Entity(mesh, rotationmatrix,translationmatrix,texture1);
-   /* entity2 = Entity(mesh2, rotationmatrix2, translationmatrix2);
-    entity3 = Entity(mesh3, rotationmatrix3, translationmatrix3);
-    entity4 = Entity(mesh3, rotationmatrix4, translationmatrix4);*/
     
-   
-   
     camera1.LookAt(Vector3(0.5,0,0),Vector3(0,0,0),Vector3::UP);
     
    
@@ -92,11 +74,11 @@ void Application::Render(void)
     
     shader1->Enable();
     //glEnable(GL_DEPTH_TEST);
-    
-    //shader1->SetFloat("time", 1.0);
+    shader1->SetFloat("subtask", subtask);
+    shader1->SetFloat("time", 1.0);
     quad.Render();
     //glDisable(GL_DEPTH_TEST);
-    
+   
     shader1->Disable();
 
 	// ...
@@ -109,11 +91,7 @@ void Application::Render(void)
 // Called after render
 void Application::Update(float seconds_elapsed)
 {
-    if (animation) {
-        entity.Update(seconds_elapsed);
-        entity2.Update(seconds_elapsed / 2);
-        entity3.Update(seconds_elapsed*2);
-    };
+    
     
 }
 
@@ -127,142 +105,53 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 
 
     case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
-    case SDLK_1: // draw single entity
-        if (!draw_entity) {
-            draw_entity = true;
-        }
-        else {
-            draw_entity = false;
-        }
+    case SDLK_a:
+        subtask = 1;
         break;
-    case SDLK_2: //  draw multiple animated entities
-
-        if (!animation) {
-            animation = true;
-        }
-        else {
-            animation = false;
-        }
+    case SDLK_b: 
+        subtask = 2;
+        
         break;
-    case SDLK_o:
-        // Set camera to orthographic mode
-        if (!ortographic) {
-            ortographic = true;
-            perspective = false;
-        }
-        else {
-            ortographic = false;
-            perspective = false;
-        }
+    case SDLK_c:
+        subtask = 3;
+       
         break;
 
-    case SDLK_p:
-        // Set camera to perspective mode
-        if (!perspective) {
-            perspective = true;
-            ortographic = false;
-        }
-        else {
-            perspective = false;
-
-        }
+    case SDLK_d:
+        subtask = 4;
         break;
-    case SDLK_n:
-        // Set the current property to camera near
-        if (!change_near) {
-            change_near = true;
-            change_fov = false;
-            change_far = false;
-        }
-        else {
-            change_near = false;
-        }
+    case SDLK_e:
+        subtask = 5;
         break;
-    case SDLK_v:
-        // Set the current property to fov
-        if (!change_fov) {
-            change_fov = true;
-            change_near = false;
-            change_far = false;
-
-        }
-        else {
-            change_fov = false;
-        }
-        break;
-
     case SDLK_f:
-        // Set the current property to camera far
-        if (!change_far) {
-            change_far = true;
-            change_near = false;
-            change_fov = false;
-        }
-        else {
-            change_far = false;
-        }
+        subtask = 6;
+        break;
+
+    case SDLK_k:
+       
         break;
 
     case SDLK_PLUS: //  increase current property
-        if (change_fov) {
-            current_fov += 90;
-        }
-        else if (change_near) {
-            current_near += 0.03;
-
-        }
-        else if (change_far) {
-            current_far += 20;
-        }
+        
         break;
     case SDLK_MINUS: // , decrease current property
-        if (change_fov) {
-            current_fov -= 90;
-        }
-        else if (change_near) {
-            current_near -= 0.03;
-
-        }
-        else if (change_far) {
-            current_far -= 200;
-        }
+        
         break;
 
 
 
-    case SDLK_c:
-        
-        if (!interpolated_bool) {
-            interpolated_bool = true;
-            texture_bool = false;
-
-        }
-        else {
-            interpolated_bool = false;
-        }
+    case SDLK_h:
+       
         break;
     case SDLK_z:
         
-        if (!oclussion) {
-            oclussion = true;
-
-        }
-        else {
-           oclussion = false;
-        }
+       
         break;
     
     
     case SDLK_t:
         
-        if (!texture_bool) {
-            interpolated_bool = false;
-            texture_bool = true;
-
-        }
-        else {
-            texture_bool = false;
-        }
+      
         break;
     
     }

@@ -30,7 +30,7 @@ private:
 	Shader* shader1;
 	Mesh quad;
 	Matrix44 viewprojection;
-	
+	float subtask;
 public:
 
 	// Window
