@@ -31,7 +31,10 @@ Application::Application(const char* caption, int width, int height)
     formulas = true;
     filters = false;
     transformation = false;
+    mesh = false;
     subtask = 1;
+    rotationmatrix.SetRotation(0,Vector3(0,0,0)); 
+    translationmatrix.SetTranslation(0, 0, 0.0);
     
     camera1.LookAt(Vector3(0.5,0,0),Vector3(0,0,0),Vector3::UP);
     
@@ -48,33 +51,49 @@ Application::~Application()
 void Application::Init(void)
 {
 	std::cout << "Initiating app..." << std::endl;
-    
+   //cargamos las 2 texturas
     fruits.Load("images/fruits.png");
+    lee = Texture::Get("textures/lee_color_specular.tga");
+    
+    //creamos los quads
     quad.CreateQuad();
-   //Shader* shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+    simple.LoadOBJ("meshes/lee.obj");
+   
+    //creamos los shaders y la entidad
     shader1 = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
-  // shader1 = shader;
+    shader2 = Shader::Get("shaders/simple.vs", "shaders/simple.fs");
+    entity = Entity(&simple, rotationmatrix, translationmatrix, *lee,shader2);
     
-    
+
+
 }
 
 
 void Application::Render(void)
 {
-    
-    
-    shader1->Enable();
-    //glEnable(GL_DEPTH_TEST);
-    shader1->SetFloat("subtask", subtask);
-    shader1->SetFloat("time",time);
-    shader1->SetTexture("texture", &fruits);
-    shader1->SetFloat("formulas", formulas);
-    shader1->SetFloat("filters", filters);
-    shader1->SetFloat("transformation", transformation);
-    quad.Render();
-    //glDisable(GL_DEPTH_TEST);
+    //TASKS 1,2,3
+    if (!mesh) {
+        shader1->Enable();
+        glEnable(GL_DEPTH_TEST);
+        shader1->SetFloat("subtask", subtask);
+        shader1->SetFloat("time", time);
+        shader1->SetTexture("texture", &fruits);
+        shader1->SetFloat("formulas", formulas);
+        shader1->SetFloat("filters", filters);
+        shader1->SetFloat("transformation", transformation);
+        shader1->SetFloat("mesh", mesh);
+
+        quad.Render();
+        glDisable(GL_DEPTH_TEST);
+
+        shader1->Disable();
+    }
+    //TASK 4
+    if (mesh) {
+        
+        entity.Render(&camera1);            
+    }
    
-    shader1->Disable();
 
 	// ...
    
@@ -127,6 +146,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
             formulas = true;
             filters = false;
             transformation = false;
+            mesh = false;
             subtask = 1;
         }
         else {
@@ -140,6 +160,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
             formulas = false;
             filters = true;
             transformation = false;
+            mesh = false;
             subtask = 1;
         }
         else {
@@ -153,6 +174,7 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
             formulas = false;
             filters = false;
             transformation = true;
+            mesh = false;
             subtask = 1;
         }
         else {
@@ -161,10 +183,17 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
         
         break;
 
-
-
-    case SDLK_h:
-       
+    case SDLK_4:
+        if (!mesh) {
+            formulas = false;
+            filters = false;
+            transformation = false;
+            mesh = true;
+            subtask = 1;
+        }
+        else {
+            mesh = false;
+        }
         break;
     case SDLK_z:
         

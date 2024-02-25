@@ -5,10 +5,11 @@ uniform float formulas;
 uniform float filters;
 uniform float transformation;
 uniform sampler2D texture;
+
 void main()
 {
-	//vec3 color= vec3(1.0);
-	//1
+	
+	//TASK1
 	if(formulas){
 
 		if(subtask==1){
@@ -24,21 +25,17 @@ void main()
 		}
 		else if (subtask==3){
 		
+			//lineas verticales
+			float vertical = step(sin(v_uv.x * 32.0) * 0.5 + 0.5, 0.1);
 
-			// Define line width
-			float lineWidth = 0.1; // Adjust line width here
-
-			// Create vertical stripes using sine and step functions
-			float vertical = step(sin(v_uv.x * 32.0) * 0.5 + 0.5, lineWidth);
-
-			// Create horizontal stripes using cosine and step functions
-			float horizontal = step(cos(v_uv.y * 30.0) * 0.5 + 0.5, lineWidth);
+			//lineas horizontales
+			float horizontal = step(cos(v_uv.y * 30.0) * 0.5 + 0.5, 0.1);
 
 		
-			// Set colors based on stripes
-			vec3 color = vec3(0.0, 0.0, 0.0); // Black background
-			color += vertical * vec3(1.0, 0.0, 0.0); // Red vertical lines
-			color += horizontal * vec3(0.0, 0.0, 1.0); // Blue horizontal lines
+			// ponemos los colores
+			vec3 color = vec3(0.0, 0.0, 0.0); // fondo negro
+			color += vertical * vec3(1.0, 0.0, 0.0); // lineas rojas
+			color += horizontal * vec3(0.0, 0.0, 1.0); // lineas azules
 			gl_FragColor =vec4(color,1.0);	
 
 		}
@@ -60,56 +57,78 @@ void main()
 		}
 		else if (subtask==6){
 			 float sinus =  2 * sin(v_uv.y * 8.5)+1;
-    		//sinus = sinus * 0.5 + 0.5; // Normalize to 0..1
-    		gl_FragColor = vec4(0.0, sinus, 0.0, 1.0); // Green wave
+    		sinus = sinus * 0.5 + 0.5; 
+    		gl_FragColor = vec4(0.0, sinus, 0.0, 1.0); 
 
 		}
 	}
+
+
+	//TASK 2
 	else if(filters){
 
 		//blanco y negro
 		if(subtask==1){
 			vec4 color = texture2D(texture, v_uv);
-			float luminance = dot(color, vec3(0.2989, 0.5870, 0.1140));
-			gl_FragColor = vec4(luminance, luminance, luminance, 1.0);
+			//convertimos de rgb a iluminacion con el producto escalar
+			float blackandwhite = dot(color, vec3(0.3, 0.6, 0.1));
+
+			gl_FragColor = vec4(blackandwhite, blackandwhite, blackandwhite, 1.0);
 		}
 		//negativo
 		else if(subtask==2){
 			vec3 color = texture2D(texture, v_uv);
+			//colores negativos
 			gl_FragColor = vec4(1-color.x,1-color.y,1-color.z, 1.0);
 
 		}
-		//sepia
+		//filtro sepia
 		else if (subtask==3){
 
 			vec3 color = texture2D(texture, v_uv);
-			vec3 swizzled = mix(color.y, color.x, 0.5);
-			gl_FragColor = vec4(swizzled,1);
+			//primero convertimos a blanco y negro
+			vec3 blackandwhite = dot(color, vec3(0.1, 0.6, 0.1));
+			//mezclamos con amarillo
+			vec3 yellow = mix(blackandwhite,vec3(1,0.8,0.1), 0.5);
+			gl_FragColor = vec4(yellow,1);
 		}
-		//resaltar sombras
+		//subir contraste
 		else if(subtask==4){
+
 			vec3 color = texture2D(texture, v_uv);
-			vec3 top = texture2D(texture, v_uv + vec2(0.0, 1.0 / 700));
-			vec3 bottom = texture2D(texture, v_uv + vec2(0.0, -1.0 / 700));
-			vec3 left = texture2D(texture, v_uv + vec2(-1.0 / 700, 0.0));
-			vec3 right = texture2D(texture, v_uv + vec2(1.0 / 700, 0.0));
-			vec3 dx = mix(right, left, 0.5);
-			vec3 dy = mix(top, bottom, 0.5);
-			vec3 edge = mix(dot(dx-0.2, dx+0.2), dot(dy-0.1, dy+0.1), 0.1);
-			gl_FragColor = vec4(mix(color, edge, 1), 0.5);
+			//primero convertimos a blanco y negro
+			vec3 blackandwhite = dot(color, vec3(0.13, 0.6, 0.11));
+
+			float contrast = 100; 
+			//subimos el contraste
+			vec3 apply_contrast = (blackandwhite - 0.5) * contrast + 0.5;
+
+			gl_FragColor = vec4(apply_contrast,1.0);
 
 		}
-		//
+		//bajar brillo(?)
+		else if( subtask==5){
+			vec3 color = texture2D(texture, v_uv);
+			//"atenuamos" los colores
+			gl_FragColor = vec4(color.x*0.4,color.y*0.4,color.z*0.4,1.0);
+		}
+		//desenfoque
 		else if(subtask==6){
-			vec3 top = texture2D(texture, v_uv + vec2(0.0, 1.0 / 150));
+			vec3 top = texture2D(texture, v_uv + vec2(0.0, 1.0 /120));
+			//sacamos los 4 pixeles adyacentes
 			vec3 bottom = texture2D(texture, v_uv + vec2(0.0, -1.0 / 150));
 			vec3 left = texture2D(texture, v_uv + vec2(-1.0 / 150, 0.0));
 			vec3 right = texture2D(texture, v_uv + vec2(1.0 / 150, 0.0));
-			vec3 color = mix(mix(mix(top, bottom, 0.2), left, 0.2), right, 0.2);
+			//hacemos la media de los 4 para desenfocar
+			vec3 color= (top+bottom+left+right)/4; 
+			
 			gl_FragColor = vec4(color, 1.0);
 
 		}
+
 	}
+
+	//TASK 3
 	else if(transformation){
 		
 		//pixelar

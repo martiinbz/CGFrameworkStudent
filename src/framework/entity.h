@@ -3,21 +3,26 @@
 #include "mesh.h"
 #include "framework.h"
 #include "entity.h"
+#include "shader.h"
 
 class Entity {
 
 private:
-	Mesh mesh;
-	Matrix44 modelmatrix;
+	Mesh* mesh;
+	
 	Matrix44 rotationmatrix;
 	Matrix44 translationmatrix;
-	Image texture;
+	Texture texture;
+	Matrix44 modelmatrix;
+	Shader* shader;
 
 
 public: 
+	
 	Entity();
-	Entity(Mesh& mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Image& texture1);
-	void Entity::Render(Image* framebuffer, Camera* camera, FloatImage* zBuffer, bool texture, bool inter,bool oclussion);
+	Entity(Mesh* mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Texture texture1,Shader* shader1);
+	void Entity::Render(Camera* camera);
+
 	void Entity::Update(float seconds_elapsed);
 
 
