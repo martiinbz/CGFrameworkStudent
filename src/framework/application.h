@@ -31,6 +31,8 @@ private:
 	Mesh quad;
 	Matrix44 viewprojection;
 	float subtask;
+	Texture fruits;
+	bool formulas, filters, transformation;
 public:
 
 	// Window

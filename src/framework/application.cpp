@@ -28,20 +28,10 @@ Application::Application(const char* caption, int width, int height)
     int current_fov = 45;
     int current_near = 0.01;
     int current_far = 100;
-    draw_entity = false;
-    animation = false; 
-    ortographic = false;
-    perspective = false;
-    change_near = false;
-    change_far = false;
-    change_fov = false;
-    increase = false;
-    decrease = false;
-    texture_bool = false;
-    interpolated_bool = false;
-    oclussion = false;
-    Vector3 t1 = Vector3(0, 0, 2);
-    
+    formulas = true;
+    filters = false;
+    transformation = false;
+    subtask = 1;
     
     camera1.LookAt(Vector3(0.5,0,0),Vector3(0,0,0),Vector3::UP);
     
@@ -59,6 +49,7 @@ void Application::Init(void)
 {
 	std::cout << "Initiating app..." << std::endl;
     
+    fruits.Load("images/fruits.png");
     quad.CreateQuad();
    //Shader* shader = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
     shader1 = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
@@ -75,7 +66,11 @@ void Application::Render(void)
     shader1->Enable();
     //glEnable(GL_DEPTH_TEST);
     shader1->SetFloat("subtask", subtask);
-    shader1->SetFloat("time", 1.0);
+    shader1->SetFloat("time",time);
+    shader1->SetTexture("texture", &fruits);
+    shader1->SetFloat("formulas", formulas);
+    shader1->SetFloat("filters", filters);
+    shader1->SetFloat("transformation", transformation);
     quad.Render();
     //glDisable(GL_DEPTH_TEST);
    
@@ -127,14 +122,42 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
         subtask = 6;
         break;
 
-    case SDLK_k:
+    case SDLK_1:
+        if (!formulas) {
+            formulas = true;
+            filters = false;
+            transformation = false;
+            subtask = 1;
+        }
+        else {
+            formulas = false;
+        }
        
         break;
 
-    case SDLK_PLUS: //  increase current property
+    case SDLK_2: //  increase current property
+        if (!filters) {
+            formulas = false;
+            filters = true;
+            transformation = false;
+            subtask = 1;
+        }
+        else {
+            filters = false;
+        }
+
         
         break;
-    case SDLK_MINUS: // , decrease current property
+    case SDLK_3: // , decrease current property
+        if (!transformation) {
+            formulas = false;
+            filters = false;
+            transformation = true;
+            subtask = 1;
+        }
+        else {
+            transformation = false;
+        }
         
         break;
 
