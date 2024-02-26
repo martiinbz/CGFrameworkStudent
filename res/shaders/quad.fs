@@ -56,9 +56,12 @@ void main()
 
 		}
 		else if (subtask==6){
-			 float sinus =  2 * sin(v_uv.y * 8.5)+1;
-    		sinus = sinus * 0.5 + 0.5; 
-    		gl_FragColor = vec4(0.0, sinus, 0.0, 1.0); 
+			//hacemos el sinus
+			 float sinus =  0.25 * sin(v_uv.x *2*3.14159)+0.5;
+			
+    		float s= step(0,sinus-v_uv.y);
+			//pintamos en la componente verde
+    		gl_FragColor = vec4(0.0, mix(1-v_uv.y,v_uv.y,s), 0.0, 1.0); 
 
 		}
 	}
