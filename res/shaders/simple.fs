@@ -11,7 +11,7 @@ void main()
 	// Set the ouput color per pixel
 	//vec3 color = normalize(v_world_normal);
 
-	vec3 color= texture2D(lee, v_uv);
+	vec3 color= texture2D(lee, v_uv).xyz;
 
 	gl_FragColor = vec4( color, 1.0 );
 	
