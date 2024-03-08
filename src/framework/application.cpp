@@ -51,25 +51,25 @@ Application::~Application()
 void Application::Init(void)
 {
 	std::cout << "Initiating app..." << std::endl;
-   //cargamos las 2 texturas
-    fruits.Load("images/fruits.png");
+
+   
     lee = Texture::Get("textures/lee_color_specular.tga");
     
-    //creamos los quads
-    quad.CreateQuad();
     simple.LoadOBJ("meshes/lee.obj");
    
     //creamos los shaders y la entidad
     shader1 = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs");
-    shader2 = Shader::Get("shaders/simple.vs", "shaders/simple.fs");
-    entity = Entity(&simple, rotationmatrix, translationmatrix, *lee,shader2);
     
-    material = Material(shader1, lee, Color(255, 0, 0));
+    material = &Material(shader1, lee, Color(255, 0, 0));
+    entity = Entity(&simple, rotationmatrix, translationmatrix, *material);
+    
+   
     
   
     uniformdata.viewprojectionmatrix = camera1.viewprojection_matrix;
     uniformdata.modelmatrix = entity.GetModelMatrix();
-    uniformdata.material = &material;
+    uniformdata.material = material;
+    
 
 
 }

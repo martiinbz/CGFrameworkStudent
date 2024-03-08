@@ -13,15 +13,15 @@ private:
 	
 	Matrix44 rotationmatrix;
 	Matrix44 translationmatrix;
-	Texture texture;
 	Matrix44 modelmatrix;
-	Shader* shader;
+	Material material;
+	
 	
 	
 public: 
 	
 	Entity();
-	Entity(Mesh* mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Texture texture1,Shader* shader1);
+	Entity(Mesh* mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Material m);
 	void Entity::Render(sUniformData uniformData);
 
 	Matrix44 Entity::GetModelMatrix();

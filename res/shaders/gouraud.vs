@@ -14,7 +14,7 @@ void main(){
 	v_world_position= world_position;
 	v_world_normal= world_normal;
 
-	gl_Position= u_viewprojection* vec4(world_position,1.0),
+	gl_Position= u_viewprojection* vec4(world_position,1.0);
 
 
 

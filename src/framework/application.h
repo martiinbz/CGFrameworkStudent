@@ -19,17 +19,17 @@ class Application
 
 private:
 	int w, h;
-	int start_x, start_y, start_z, end_x, end_y, end_z, current_fov, current_near, current_far;
+	
 	Mesh mesh1; 
 	Mesh mesh2, mesh3;
-	Matrix44 modelMatrix, modelMatrix2, modelMatrix3, rotationmatrix, translationmatrix, rotationmatrix2, translationmatrix2, rotationmatrix3, translationmatrix3, rotationmatrix4, translationmatrix4;
+	Matrix44 modelMatrix, rotationmatrix, translationmatrix;
 	Entity entity;
-	Entity entity2, entity3, entity4;
+	
 	Camera camera1;
 	bool draw_entity, animation, ortographic, perspective, change_near, change_far, change_fov, increase, decrease, interpolated_bool, texture_bool, oclussion;
 	Image texture1;
-	Shader* shader1,*shader2;
-	Mesh quad;
+	Shader* shader1;
+	
 	Mesh simple;
 	Matrix44 viewprojection;
 	float subtask;
@@ -37,7 +37,7 @@ private:
 	bool formulas, filters, transformation, mesh;
 	Texture* lee;
 	sUniformData uniformdata;
-	Material material;
+	Material* material;
 	Color color;
 
 public:

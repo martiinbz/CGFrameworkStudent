@@ -12,12 +12,11 @@
 Entity::Entity() {
 
 }
-Entity::Entity(Mesh* mesh1, Matrix44& rotationmatrix,Matrix44& translationmatrix,Texture texture1,Shader* shader1) {
+Entity::Entity(Mesh* mesh1, Matrix44& rotationmatrix, Matrix44& translationmatrix, Material m) {
 
 	mesh = mesh1;
     modelmatrix = translationmatrix*rotationmatrix;
-    texture = texture1;
-    shader = shader1;
+    material = m;
    
 }
 
@@ -26,15 +25,13 @@ void Entity::Render( sUniformData uniformData)
  {
     
     //pasamos los atributos necesarios a la GPU
-    shader->Enable();
-    shader->SetMatrix44("u_viewprojection", uniformData.viewprojectionmatrix);
-    shader->SetMatrix44("u_model",uniformData.modelmatrix );
-    shader->SetTexture("lee", &texture);
+    uniformData.material->Enable(uniformData);
+    
     glEnable(GL_DEPTH_TEST);
     //renderizamos la mesh
     mesh->Render();
     glDisable(GL_DEPTH_TEST);
-    shader->Disable();
+    uniformData.material->Disable();
 }
 Matrix44 Entity::GetModelMatrix() {
     return modelmatrix;
