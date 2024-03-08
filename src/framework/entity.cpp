@@ -8,6 +8,7 @@
 
 
 
+
 Entity::Entity() {
 
 }
@@ -21,12 +22,13 @@ Entity::Entity(Mesh* mesh1, Matrix44& rotationmatrix,Matrix44& translationmatrix
 }
 
 //LAB 4
-void Entity::Render(Camera* camera) {
+void Entity::Render( sUniformData uniformData)
+ {
     
     //pasamos los atributos necesarios a la GPU
     shader->Enable();
-    shader->SetMatrix44("u_viewprojection", camera->GetViewProjectionMatrix());
-    shader->SetMatrix44("u_model",modelmatrix );
+    shader->SetMatrix44("u_viewprojection", uniformData.viewprojectionmatrix);
+    shader->SetMatrix44("u_model",uniformData.modelmatrix );
     shader->SetTexture("lee", &texture);
     glEnable(GL_DEPTH_TEST);
     //renderizamos la mesh
@@ -34,7 +36,9 @@ void Entity::Render(Camera* camera) {
     glDisable(GL_DEPTH_TEST);
     shader->Disable();
 }
-
+Matrix44 Entity::GetModelMatrix() {
+    return modelmatrix;
+}
 
 //void Entity::Render(Image* framebuffer, Camera* camera,FloatImage* zBuffer,bool bool_texture, bool bool_interpolate,bool oclussion){
 //    //obtenemos los vertices

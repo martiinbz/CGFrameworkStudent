@@ -60,10 +60,16 @@ void Application::Init(void)
     simple.LoadOBJ("meshes/lee.obj");
    
     //creamos los shaders y la entidad
-    shader1 = Shader::Get("shaders/quad.vs", "shaders/quad.fs");
+    shader1 = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs");
     shader2 = Shader::Get("shaders/simple.vs", "shaders/simple.fs");
     entity = Entity(&simple, rotationmatrix, translationmatrix, *lee,shader2);
     
+    material = Material(shader1, lee, Color(255, 0, 0));
+    
+  
+    uniformdata.viewprojectionmatrix = camera1.viewprojection_matrix;
+    uniformdata.modelmatrix = entity.GetModelMatrix();
+    uniformdata.material = &material;
 
 
 }
@@ -71,28 +77,12 @@ void Application::Init(void)
 
 void Application::Render(void)
 {
-    //TASKS 1,2,3
-    if (!mesh) {
-        shader1->Enable();
-        glEnable(GL_DEPTH_TEST);
-        shader1->SetFloat("subtask", subtask);
-        shader1->SetFloat("time", time);
-        shader1->SetTexture("texture", &fruits);
-        shader1->SetFloat("formulas", formulas);
-        shader1->SetFloat("filters", filters);
-        shader1->SetFloat("transformation", transformation);
-        shader1->SetFloat("mesh", mesh);
-
-        quad.Render();
-        glDisable(GL_DEPTH_TEST);
-
-        shader1->Disable();
-    }
-    //TASK 4
-    if (mesh) {
+   
+    
+  
         
-        entity.Render(&camera1);            
-    }
+        entity.Render(uniformdata);            
+    
    
 
 	// ...

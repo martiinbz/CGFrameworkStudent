@@ -15,14 +15,15 @@ Material::Material() {
 
 
 }
-Material::Material(Shader* shader1, Texture texture1, Color color1) {
+Material::Material(Shader* shader1, Texture* texture1, Color color1) {
 
 	shader = shader1;
 	texture = texture1;
 	color = color1;
 	
 }
-void Material::Enable() {
+void Material::Enable(const sUniformData& uniformData) {
+	shader->SetMatrix44("u_model", uniformData.modelmatrix);
 	shader->Enable();
 }
 void Material::Disable() {

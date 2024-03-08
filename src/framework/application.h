@@ -10,6 +10,7 @@
 #include "image.h"
 #include "entity.h"
 #include "shader.h"
+#include "material.h"
 
 
 
@@ -35,6 +36,10 @@ private:
 	Texture fruits;
 	bool formulas, filters, transformation, mesh;
 	Texture* lee;
+	sUniformData uniformdata;
+	Material material;
+	Color color;
+
 public:
 
 	// Window
