@@ -37,7 +37,7 @@ private:
 	bool formulas, filters, transformation, mesh;
 	Texture* lee;
 	sUniformData uniformdata;
-	Material* material;
+	Material material;
 	Color color;
 
 public:

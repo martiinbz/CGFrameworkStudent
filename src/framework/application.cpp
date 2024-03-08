@@ -5,6 +5,7 @@
 #include "image.h"
 #include "button.h"
 #include "entity.h"
+#include "material.h"
 
 
 
@@ -54,22 +55,24 @@ void Application::Init(void)
 
    
     lee = Texture::Get("textures/lee_color_specular.tga");
-    
+
     simple.LoadOBJ("meshes/lee.obj");
-   
+
     //creamos los shaders y la entidad
     shader1 = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs");
-    
-    material = &Material(shader1, lee, Color(255, 0, 0));
-    entity = Entity(&simple, rotationmatrix, translationmatrix, *material);
-    
-   
-    
-  
+
+    material = Material(shader1, lee, Color(255, 0, 0),simple);
+    entity = Entity(&simple, rotationmatrix, translationmatrix, &material);
+
+
+
+
     uniformdata.viewprojectionmatrix = camera1.viewprojection_matrix;
     uniformdata.modelmatrix = entity.GetModelMatrix();
-    uniformdata.material = material;
-    
+    uniformdata.intensity = 2;
+    uniformdata.scene_lights = 1;
+
+
 
 
 }
@@ -78,8 +81,6 @@ void Application::Init(void)
 void Application::Render(void)
 {
    
-    
-  
         
         entity.Render(uniformdata);            
     

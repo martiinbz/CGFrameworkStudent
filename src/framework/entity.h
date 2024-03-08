@@ -14,16 +14,16 @@ private:
 	Matrix44 rotationmatrix;
 	Matrix44 translationmatrix;
 	Matrix44 modelmatrix;
-	Material material;
+	Material* material;
 	
 	
 	
 public: 
 	
 	Entity();
-	Entity(Mesh* mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Material m);
+	Entity(Mesh* mesh, Matrix44& rotationmatrix, Matrix44& translationmatrix,Material* m);
 	void Entity::Render(sUniformData uniformData);
-
+	Material Entity::GetMaterial();
 	Matrix44 Entity::GetModelMatrix();
 
 	void Entity::Update(float seconds_elapsed);

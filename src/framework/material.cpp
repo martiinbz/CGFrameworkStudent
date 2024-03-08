@@ -15,20 +15,26 @@ Material::Material() {
 
 
 }
-Material::Material(Shader* shader1, Texture* texture1, Color color1) {
+Material::Material(Shader* shader1, Texture* texture1, Color color1, Mesh m) {
 
+	Mesh* mesh;
 	shader = shader1;
 	texture = texture1;
 	color = color1;
 	
 }
 
+
 void Material::Enable( const sUniformData& uniformData) {
 	
+	glEnable(GL_DEPTH_TEST);
 	shader->SetMatrix44("u_model", uniformData.modelmatrix);
 	shader->SetMatrix44("u_viewprojection", uniformData.viewprojectionmatrix);
 	shader->SetTexture("lee", texture);
+
 	shader->Enable();
+
+	mesh->Render();
 }
 
 void Material::Disable() {

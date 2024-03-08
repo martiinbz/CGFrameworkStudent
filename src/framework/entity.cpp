@@ -4,6 +4,7 @@
 #include "application.h"
 #include "entity.h"
 #include "camera.h"
+#include "material.h"
 
 
 
@@ -12,7 +13,7 @@
 Entity::Entity() {
 
 }
-Entity::Entity(Mesh* mesh1, Matrix44& rotationmatrix, Matrix44& translationmatrix, Material m) {
+Entity::Entity(Mesh* mesh1, Matrix44& rotationmatrix, Matrix44& translationmatrix, Material* m) {
 
 	mesh = mesh1;
     modelmatrix = translationmatrix*rotationmatrix;
@@ -20,18 +21,19 @@ Entity::Entity(Mesh* mesh1, Matrix44& rotationmatrix, Matrix44& translationmatri
    
 }
 
+
 //LAB 4
 void Entity::Render( sUniformData uniformData)
  {
     
-    //pasamos los atributos necesarios a la GPU
-    uniformData.material->Enable(uniformData);
+    uniformData.modelmatrix = modelmatrix;
+    material->Enable(uniformData);
     
     glEnable(GL_DEPTH_TEST);
     //renderizamos la mesh
     mesh->Render();
     glDisable(GL_DEPTH_TEST);
-    uniformData.material->Disable();
+    material->Disable();
 }
 Matrix44 Entity::GetModelMatrix() {
     return modelmatrix;
