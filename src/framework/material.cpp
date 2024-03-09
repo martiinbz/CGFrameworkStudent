@@ -15,9 +15,9 @@ Material::Material() {
 
 
 }
-Material::Material(Shader* shader1, Texture* texture1, Color color1, Mesh m) {
+Material::Material(Shader* shader1, Texture* texture1, Color color1) {
 
-	Mesh* mesh;
+	
 	shader = shader1;
 	texture = texture1;
 	color = color1;
@@ -28,13 +28,20 @@ Material::Material(Shader* shader1, Texture* texture1, Color color1, Mesh m) {
 void Material::Enable( const sUniformData& uniformData) {
 	
 	glEnable(GL_DEPTH_TEST);
+	shader->Enable();
 	shader->SetMatrix44("u_model", uniformData.modelmatrix);
 	shader->SetMatrix44("u_viewprojection", uniformData.viewprojectionmatrix);
 	shader->SetTexture("lee", texture);
-
-	shader->Enable();
-
-	mesh->Render();
+	shader->SetVector3("Ia", uniformData.ambient_intensity);
+	shader->SetVector3("Imd", uniformData.scene_lights.diffuse_intensity);
+	shader->SetVector3("Im,s", uniformData.scene_lights.specular_intensity);
+	shader->SetVector3("m", uniformData.scene_lights.position);
+	shader->SetVector3("Ka",Ka);
+	shader->SetVector3("Ks", Ks);
+	shader->SetVector3("Kd", Kd);
+	shader->SetFloat("shininess", shininess);
+	shader->SetVector3("u_eyePosition", uniformData.eye_position);
+	
 }
 
 void Material::Disable() {

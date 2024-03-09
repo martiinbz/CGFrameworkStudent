@@ -33,7 +33,8 @@ Application::Application(const char* caption, int width, int height)
     filters = false;
     transformation = false;
     mesh = false;
-    subtask = 1;
+    gouraud = true;
+    phong = false;
     rotationmatrix.SetRotation(0,Vector3(0,0,0)); 
     translationmatrix.SetTranslation(0, 0, 0.0);
     
@@ -60,19 +61,30 @@ void Application::Init(void)
 
     //creamos los shaders y la entidad
     shader1 = Shader::Get("shaders/gouraud.vs", "shaders/gouraud.fs");
+    shader2 = Shader::Get("shaders/phong.vs", "shaders/phong.fs");
 
-    material = Material(shader1, lee, Color(255, 0, 0),simple);
+
+    material = Material(shader1, lee, Color(255, 0, 0));
+    material = Material(shader1, lee, Color(255, 0, 0));
     entity = Entity(&simple, rotationmatrix, translationmatrix, &material);
+    entity2 = Entity(&simple, rotationmatrix, translationmatrix, &material);
 
-
+    lights1.diffuse_intensity = Vector3(0.5,0.5,0.6);
+  
+    lights1.position = Vector3(0, 0.5, 0);
+    lights1.specular_intensity = Vector3(0.8,0.8,0.8);
 
 
     uniformdata.viewprojectionmatrix = camera1.viewprojection_matrix;
     uniformdata.modelmatrix = entity.GetModelMatrix();
-    uniformdata.intensity = 2;
-    uniformdata.scene_lights = 1;
-
-
+    uniformdata.ambient_intensity = Vector3(0.2,0.2,0.2);
+    uniformdata.scene_lights = lights1;
+    uniformdata.eye_position = camera1.eye;
+   
+    material.Ka = Vector3(0.1, 0.1, 0.1);
+    material.Kd = Vector3(0.8, 0.8, 0.8);
+    material.Ks = Vector3(1, 1, 1);
+    material.shininess = 32;
 
 
 }
@@ -81,9 +93,15 @@ void Application::Init(void)
 void Application::Render(void)
 {
    
-        
-        entity.Render(uniformdata);            
-    
+    if (gouraud) {
+        entity.Render(uniformdata);
+
+    }
+    if (phong) {
+       
+        entity2.Render(uniformdata);
+    }
+       
    
 
 	// ...
@@ -110,11 +128,23 @@ void Application::OnKeyPressed( SDL_KeyboardEvent event )
 
 
     case SDLK_ESCAPE: exit(0); break; // ESC key, kill the app
-    case SDLK_a:
-        subtask = 1;
+    case SDLK_g:
+        if (!gouraud) {
+            gouraud = true;
+            phong = false;
+        }
+        else {
+            gouraud = false;
+        }
         break;
-    case SDLK_b: 
-        subtask = 2;
+    case SDLK_p: 
+        if (!phong) {
+            gouraud = false;
+            phong = true;
+        }
+        else {
+            phong = false;
+        }
         
         break;
     case SDLK_c:

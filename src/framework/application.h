@@ -24,21 +24,25 @@ private:
 	Mesh mesh2, mesh3;
 	Matrix44 modelMatrix, rotationmatrix, translationmatrix;
 	Entity entity;
+	Entity entity2;
 	
 	Camera camera1;
 	bool draw_entity, animation, ortographic, perspective, change_near, change_far, change_fov, increase, decrease, interpolated_bool, texture_bool, oclussion;
 	Image texture1;
 	Shader* shader1;
+	Shader* shader2;
 	
 	Mesh simple;
 	Matrix44 viewprojection;
 	float subtask;
 	Texture fruits;
-	bool formulas, filters, transformation, mesh;
+	bool formulas, filters, transformation, mesh, gouraud, phong;
 	Texture* lee;
 	sUniformData uniformdata;
-	Material material;
+	Material material, material2;
 	Color color;
+	sLight lights1,lights2;
+
 
 public:
 
